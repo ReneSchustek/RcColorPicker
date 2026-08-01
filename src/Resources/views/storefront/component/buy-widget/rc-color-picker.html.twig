@@ -1,0 +1,129 @@
+{# Farbauswahl — nur sichtbar wenn Extension rcColorPickerConfig gesetzt ist #}
+{% set cpConfig = page.extensions.rcColorPickerConfig %}
+{% set colors = cpConfig.standardColors %}
+{% set allowCustom = cpConfig.allowCustomRal %}
+{% set required = cpConfig.colorRequired %}
+{% set customRalLabelVisible = cpConfig.customRalLabelVisible %}
+
+<fieldset class="rc-color-picker col-12 mb-3"
+          data-rc-color-picker="true"
+          data-product-id="{{ product.id }}"
+          data-color-required="{{ required ? '1' : '0' }}"
+          data-allow-custom-ral="{{ allowCustom ? '1' : '0' }}"
+          data-snippet-required="{{ 'rcColorPicker.required'|trans|e('html_attr') }}"
+          data-snippet-invalid-ral="{{ 'rcColorPicker.invalidRal'|trans|e('html_attr') }}">
+
+    <legend class="form-label fw-semibold">
+        {{ 'rcColorPicker.label'|trans }}
+        {% if required %}
+            <span class="text-danger" aria-hidden="true"> *</span>
+            <span class="visually-hidden"> ({{ 'rcColorPicker.requiredHint'|trans }})</span>
+        {% endif %}
+    </legend>
+
+    {# Umschaltung Standard / Eigener RAL #}
+    {% if allowCustom %}
+        <div class="rc-color-picker__mode-toggle mb-2"
+             role="radiogroup"
+             aria-label="{{ 'rcColorPicker.modeLabel'|trans }}">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input rc-color-picker__mode-radio" type="radio"
+                       name="rcColorPickerMode_{{ product.id }}" id="rcCpModeStandard_{{ product.id }}"
+                       value="standard" checked>
+                <label class="form-check-label" for="rcCpModeStandard_{{ product.id }}">
+                    {{ 'rcColorPicker.standardColor'|trans }}
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input rc-color-picker__mode-radio" type="radio"
+                       name="rcColorPickerMode_{{ product.id }}" id="rcCpModeCustom_{{ product.id }}"
+                       value="custom">
+                <label class="form-check-label" for="rcCpModeCustom_{{ product.id }}">
+                    {{ 'rcColorPicker.customRal'|trans }}
+                </label>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Standard-Farben als native Radio-Gruppe.
+
+       Bewusst keine <button>-Liste: Buttons sind für AT unabhängige Aktionen, keine Auswahl aus
+       Alternativen — „ausgewählt" und „1 von 8" lassen sich damit nicht ausdrücken. Das Radio
+       trägt den Zustand selbst, Pfeiltasten-Navigation und Roving-Tabindex liefert der Browser.
+       Sichtbar ist nicht das Radio, sondern sein <label>; die Auswahl-Optik hängt an :checked. #}
+    <div class="rc-color-picker__swatches"
+         role="radiogroup"
+         aria-label="{{ 'rcColorPicker.swatchGroupLabel'|trans }}">
+        {% for color in colors %}
+            {% set swatchId = 'rcCpSwatch_' ~ product.id ~ '_' ~ loop.index %}
+            <span class="rc-color-picker__swatch-item">
+                <input type="radio"
+                       class="rc-color-picker__swatch-input"
+                       id="{{ swatchId }}"
+                       name="rcColorPickerSwatch_{{ product.id }}"
+                       value="{{ color.ral|e('html_attr') }}"
+                       data-ral="{{ color.ral|e('html_attr') }}"
+                       data-name="{{ color.name|e('html_attr') }}"
+                       data-hex="{{ color.hex|e('html_attr') }}">
+                <label class="rc-color-picker__swatch" for="{{ swatchId }}">
+                    <span class="rc-color-picker__swatch-color"
+                          style="background-color: {{ color.hex|e('html_attr') }};"
+                          aria-hidden="true"></span>
+                    <span class="visually-hidden">
+                        {{ 'rcColorPicker.chooseColor'|trans({ '%ral%': color.ral, '%name%': color.name }) }}
+                    </span>
+                </label>
+            </span>
+        {% endfor %}
+    </div>
+
+    {# Name der gewaehlten Standard-Farbe (Live-Region) #}
+    <div class="rc-color-picker__selected-name small text-muted mt-1"
+         aria-live="polite"
+         hidden></div>
+
+    {# Eigener RAL-Code (versteckt wenn Standard-Modus aktiv) #}
+    {% if allowCustom %}
+        <div class="rc-color-picker__custom-input mt-2" hidden>
+            <label for="rcCpRalInput_{{ product.id }}"
+                   class="{{ customRalLabelVisible ? 'form-label fw-semibold' : 'visually-hidden' }}">
+                {{ 'rcColorPicker.customRalLabel'|trans }}
+            </label>
+            <div class="input-group">
+                <input type="text"
+                       id="rcCpRalInput_{{ product.id }}"
+                       class="form-control rc-color-picker__ral-input"
+                       placeholder="{{ 'rcColorPicker.placeholder'|trans|e('html_attr') }}"
+                       maxlength="20"
+                       autocomplete="off"
+                       aria-describedby="rcCpRalHint_{{ product.id }}">
+                <span class="input-group-text rc-color-picker__ral-preview-wrapper p-1" hidden>
+                    <span class="rc-color-picker__ral-preview" aria-hidden="true"></span>
+                </span>
+            </div>
+            <div id="rcCpRalHint_{{ product.id }}"
+                 class="rc-color-picker__ral-name small text-muted mt-1"
+                 aria-live="polite"
+                 hidden></div>
+        </div>
+    {% endif %}
+
+    {# Validierungsfehler (Live-Region). Die id wird bei ungültiger RAL-Eingabe an das
+       aria-describedby des Eingabefelds gehängt, damit die Meldung auch beim späteren
+       Zurücktabben noch vorgelesen wird — eine Live-Region allein sagt nur einmal an. #}
+    <div id="rcCpError_{{ product.id }}"
+         class="rc-color-picker__error invalid-feedback mt-1"
+         role="alert"
+         aria-live="assertive"
+         hidden></div>
+
+    {# Hidden-Felder fuer Payload — werden vom JS gesetzt #}
+    <input type="hidden" class="rc-color-picker__hidden-ral"
+           name="lineItems[{{ product.id }}][payload][rcColorPickerRal]" value="">
+    <input type="hidden" class="rc-color-picker__hidden-name"
+           name="lineItems[{{ product.id }}][payload][rcColorPickerName]" value="">
+    <input type="hidden" class="rc-color-picker__hidden-hex"
+           name="lineItems[{{ product.id }}][payload][rcColorPickerHex]" value="">
+    <input type="hidden" class="rc-color-picker__hidden-active"
+           name="lineItems[{{ product.id }}][payload][rcColorPickerActive]" value="">
+</fieldset>

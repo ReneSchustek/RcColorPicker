@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Standard-Farben</title>
+        <title lang="en-GB">Standard Colors</title>
+
+        <input-field type="textarea">
+            <name>standardColors</name>
+            <label>Standard-Farben (eine pro Zeile)</label>
+            <label lang="en-GB">Standard colors (one per line)</label>
+            <placeholder>RAL 9010;Reinweiß;#FFFFFF</placeholder>
+            <placeholder lang="en-GB">RAL 9010;Pure White;#FFFFFF</placeholder>
+            <helpText>Format: RAL-Code;Farbname;Hex-Code (z. B. RAL 9010;Reinweiß;#FFFFFF). Maximal 80 Einträge — darüber liegende Zeilen werden ignoriert. Für umfangreiche Farb-Auswahlen die „Eigene RAL-Eingabe" nutzen.</helpText>
+            <helpText lang="en-GB">Format: RAL code;Color name;Hex code (e.g. RAL 9010;Pure White;#FFFFFF). Maximum 80 entries — additional rows are ignored. For extensive color sets use the "Custom RAL input".</helpText>
+            <defaultValue>RAL 9010;Reinweiß;#FFFFFF
+RAL 9005;Tiefschwarz;#0A0A0D
+RAL 7016;Anthrazitgrau;#293133
+RAL 7035;Lichtgrau;#CBD0CC
+RAL 3000;Feuerrot;#A72920
+RAL 5010;Enzianblau;#0E294B
+RAL 6005;Moosgrün;#2F4538
+RAL 1021;Rapsgelb;#F3DA0B</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Anzeige-Einstellungen</title>
+        <title lang="en-GB">Display Settings</title>
+
+        <input-field type="bool">
+            <name>allowCustomRal</name>
+            <label>Eigene RAL-Eingabe erlauben</label>
+            <label lang="en-GB">Allow custom RAL input</label>
+            <helpText>Wenn aktiv, kann der Kunde neben den Standard-Farben auch einen eigenen RAL-Code eingeben.</helpText>
+            <helpText lang="en-GB">When active, customers can enter a custom RAL code in addition to standard colors.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>colorRequired</name>
+            <label>Farbauswahl ist Pflicht</label>
+            <label lang="en-GB">Color selection is required</label>
+            <helpText>Wenn aktiv, muss der Kunde eine Farbe auswählen, bevor er das Produkt in den Warenkorb legen kann.</helpText>
+            <helpText lang="en-GB">When active, the customer must select a color before adding the product to the cart.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>customRalLabelVisible</name>
+            <label>Label für Custom-RAL sichtbar anzeigen</label>
+            <label lang="en-GB">Show label for custom RAL input</label>
+            <helpText>BFSG-Empfehlung: blendet das Label „Eigener RAL-Code" permanent ein statt nur für Screenreader. Aktivieren, wenn das Theme-Layout den zusätzlichen Text-Platz erlaubt.</helpText>
+            <helpText lang="en-GB">BFSG recommendation: shows the "Custom RAL code" label permanently instead of for screen readers only. Enable if the theme layout allows the additional text space.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+</config>

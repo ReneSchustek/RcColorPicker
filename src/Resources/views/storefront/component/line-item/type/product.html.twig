@@ -1,0 +1,20 @@
+{% sw_extends '@Storefront/storefront/component/line-item/type/product.html.twig' %}
+
+{% block component_line_item_type_product_label %}
+    {{ parent() }}
+
+    {% if lineItem.payload.rcColorPickerActive is defined and lineItem.payload.rcColorPickerActive %}
+        {% set cpRal = lineItem.payload.rcColorPickerRal|default('') %}
+        {% set cpName = lineItem.payload.rcColorPickerName|default('') %}
+        {% set cpHex = lineItem.payload.rcColorPickerHex|default('') %}
+
+        <div class="rc-color-picker-cart-info text-muted small mt-1">
+            {{ 'rcColorPicker.cartLabel'|trans }}:
+            {% if cpHex %}
+                <span class="rc-color-picker-cart-swatch" style="background-color: {{ cpHex|e('html_attr') }};"></span>
+            {% endif %}
+            {{ cpRal|e('html') }}
+            {% if cpName %} – {{ cpName|e('html') }}{% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{
+    "rcColorPicker": {
+        "label": "Color selection",
+        "modeLabel": "Color selection mode",
+        "standardColor": "Standard color",
+        "customRal": "Custom RAL color",
+        "customRalLabel": "RAL code",
+        "placeholder": "e.g. RAL 7016",
+        "required": "Please select a color.",
+        "requiredHint": "required",
+        "chooseColor": "Select color %ral% %name%",
+        "swatchGroupLabel": "Available standard colors",
+        "cartLabel": "Color",
+        "invalidRal": "Unknown RAL code. Please enter a valid code, for example RAL 7016."
+    }
+}

@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget-form.html.twig' %}
+
+{% block buy_widget_buy_button_container %}
+    {% if page.extensions.rcColorPickerConfig is defined %}
+        {% sw_include '@RcColorPicker/storefront/component/buy-widget/rc-color-picker.html.twig' %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
