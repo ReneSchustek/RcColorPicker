@@ -49,7 +49,7 @@ final class RcColorPicker extends Plugin
 
     /**
      * Während install/update/uninstall sind plugin-eigene Services nicht im DI-Container
-     * (Shopware-Lifecycle). Deshalb Installer direkt instanziieren und ausschliesslich
+     * (Shopware-Lifecycle). Deshalb Installer direkt instanziieren und ausschließlich
      * Core-Services aus dem Container holen.
      */
     private function getInstaller(): CustomFieldInstaller

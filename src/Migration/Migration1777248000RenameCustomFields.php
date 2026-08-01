@@ -69,7 +69,7 @@ final class Migration1777248000RenameCustomFields extends MigrationStep
 
     /**
      * Verschiebt einen JSON-Key innerhalb der custom_fields-Spalte: setzt den neuen Key
-     * mit dem Wert des alten und entfernt anschliessend den alten Key. Idempotent durch
+     * mit dem Wert des alten und entfernt anschließend den alten Key. Idempotent durch
      * den WHERE-Filter auf den alten Key.
      *
      * Tabellen- und Key-Namen sind hartkodierte Plugin-Konstanten, daher kein Injection-Risiko.

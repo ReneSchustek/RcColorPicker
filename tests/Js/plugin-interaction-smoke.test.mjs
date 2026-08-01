@@ -243,7 +243,7 @@ describe('Zurücknehmen der Farbe', () => {
         const generisch = form.ereignisse.filter(
             e => e.typ === RcColorPickerPlugin.SUFFIX_CHANGED_EVENT,
         );
-        assert.strictEqual(generisch.length, 1, 'auch das Leeren ist eine Aenderung');
+        assert.strictEqual(generisch.length, 1, 'auch das Leeren ist eine Änderung');
         assert.strictEqual(generisch[0].detail.suffix, '');
     });
 

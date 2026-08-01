@@ -103,7 +103,7 @@ final class ConfigServiceTest extends TestCase
 
         $colors = $service->getStandardColors();
 
-        self::assertCount(1, $colors, sprintf('Hex "%s" hätte nicht akzeptiert werden duerfen', $hex));
+        self::assertCount(1, $colors, sprintf('Hex "%s" hätte nicht akzeptiert werden dürfen', $hex));
         self::assertSame('RAL 7016', $colors[0]['ral']);
     }
 

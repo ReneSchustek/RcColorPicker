@@ -4,7 +4,7 @@ import RAL_COLORS from './ral-colors';
 /**
  * RcColorPicker — Farbauswahl (Standard-Farben + optionaler RAL-Freitext).
  *
- * Setzt form.dataset.rcColorSuffix und feuert nach jeder Wert-Aenderung das generische
+ * Setzt form.dataset.rcColorSuffix und feuert nach jeder Wert-Änderung das generische
  * Suffix-Event rcSuffixChanged (Plugin-Interaktionsprotokoll). Zusätzlich
  * bleibt das plugin-spezifische rcColorPickerChanged als Hook für interne Listener bestehen.
  */

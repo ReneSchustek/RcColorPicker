@@ -56,7 +56,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         self::assertStringContainsString("rcColorPicker.cartLabel'|trans", $patched);
         // Anchor und folgender </div> bleiben unverändert vorhanden.
         self::assertStringContainsString('{{ nestedItem.label|u.wordwrap(80) }}', $patched);
-        // Der Block kommt NACH dem schliessenden div des Labels.
+        // Der Block kommt NACH dem schließenden div des Labels.
         $labelEnd = strpos($patched, '</div>');
         $markerPos = strpos($patched, Migration1779600000UpdateOrderConfirmationMailColorBlock::MARKER);
         self::assertNotFalse($labelEnd);

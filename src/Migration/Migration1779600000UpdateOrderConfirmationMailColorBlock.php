@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
  * primär der LineItem-Payload (rcColorPicker*), Fallback auf die Order-
  * LineItem-CustomFields (ruhrcoder_color_picker_*).
  *
- * Zwei Schutzschichten gegen unbeabsichtigtes Ueberschreiben:
+ * Zwei Schutzschichten gegen unbeabsichtigtes Überschreiben:
  * - Marker-Detection: enthält der Inhalt bereits den Marker, wird nichts verändert (idempotent).
  * - Anchor-Detection: ohne den exakten Default-Anchor (Shopware-Default-Label-Ausgabe) wird nicht
  *   gepatcht. Damit bleiben shop-spezifische Anpassungen unangetastet — die manuelle Erweiterung
