@@ -5,8 +5,8 @@ import RAL_COLORS from './ral-colors';
  * RcColorPicker — Farbauswahl (Standard-Farben + optionaler RAL-Freitext).
  *
  * Setzt form.dataset.rcColorSuffix und feuert nach jeder Wert-Aenderung das generische
- * Suffix-Event rcSuffixChanged (Plugin-Interaktionsprotokoll). Zusaetzlich
- * bleibt das plugin-spezifische rcColorPickerChanged als Hook fuer interne Listener bestehen.
+ * Suffix-Event rcSuffixChanged (Plugin-Interaktionsprotokoll). Zusätzlich
+ * bleibt das plugin-spezifische rcColorPickerChanged als Hook für interne Listener bestehen.
  */
 export default class RcColorPickerPlugin extends Plugin {
 
@@ -49,15 +49,15 @@ export default class RcColorPickerPlugin extends Plugin {
             '[name="lineItems[' + this._productId + '][id]"]'
         );
 
-        // Der Kaufen-Button wird bewusst NICHT deaktiviert. Ein disabled Button faellt aus
-        // Tab-Reihenfolge und Screenreader-Ansage — wer die Farbauswahl ueberspringt, findet
-        // ihn nicht mehr und erfaehrt auch nicht warum (WCAG 3.3.1). Stattdessen laeuft der
-        // Absende-Versuch bis _onSubmit und wird dort mit einer Begruendung abgefangen.
+        // Der Kaufen-Button wird bewusst NICHT deaktiviert. Ein disabled Button fällt aus
+        // Tab-Reihenfolge und Screenreader-Ansage — wer die Farbauswahl überspringt, findet
+        // ihn nicht mehr und erfährt auch nicht warum (WCAG 3.3.1). Stattdessen läuft der
+        // Absende-Versuch bis _onSubmit und wird dort mit einer Begründung abgefangen.
         this._registerEvents();
     }
 
     destroy() {
-        // init() kann frueh zurueckkehren (kein Form, kein Produkt-ID) bevor _abortController gesetzt ist.
+        // init() kann früh zurückkehren (kein Form, kein Produkt-ID) bevor _abortController gesetzt ist.
         if (this._abortController) {
             this._abortController.abort();
         }
@@ -79,7 +79,7 @@ export default class RcColorPickerPlugin extends Plugin {
 
         if (this._ralInput) {
             this._ralInput.addEventListener('input', () => this._onRalInput(), opts);
-            // Waehrend des Tippens ist jede Zwischenstufe ungueltig — die Meldung kommt erst,
+            // Während des Tippens ist jede Zwischenstufe ungültig — die Meldung kommt erst,
             // wenn die Eingabe abgeschlossen ist.
             this._ralInput.addEventListener('blur', () => this._announceRalIfInvalid(), opts);
         }
@@ -93,7 +93,7 @@ export default class RcColorPickerPlugin extends Plugin {
         }
     }
 
-    // Der Auswahl-Zustand steht am Radio (:checked) — hier wird nur noch der Wert uebernommen.
+    // Der Auswahl-Zustand steht am Radio (:checked) — hier wird nur noch der Wert übernommen.
     _onSwatchChange(input) {
         const ral = input.dataset.ral;
         const name = input.dataset.name;
@@ -134,8 +134,8 @@ export default class RcColorPickerPlugin extends Plugin {
             return;
         }
 
-        // Unbekannter Code ist keine Farbe. Frueher wanderte er als Payload in die Bestellung,
-        // und die einzige Rueckmeldung war die ausbleibende Vorschau — rein visuell.
+        // Unbekannter Code ist keine Farbe. Früher wanderte er als Payload in die Bestellung,
+        // und die einzige Rückmeldung war die ausbleibende Vorschau — rein visuell.
         this._selectedColor = null;
         this._clearPayload();
         this._hideRalPreview();
@@ -166,13 +166,13 @@ export default class RcColorPickerPlugin extends Plugin {
             if (this._customContainer) {
                 this._customContainer.hidden = false;
             }
-            // Auswahl im Standard-Modus zuruecknehmen — sonst blieben Radio-Zustand und
-            // tatsaechlich bestellte Farbe auseinander.
+            // Auswahl im Standard-Modus zurücknehmen — sonst blieben Radio-Zustand und
+            // tatsächlich bestellte Farbe auseinander.
             this._swatchInputs.forEach(input => {
                 input.checked = false;
             });
 
-            // Der Freitext wird beim Moduswechsel neu bewertet, statt ihn ungeprueft zu uebernehmen.
+            // Der Freitext wird beim Moduswechsel neu bewertet, statt ihn ungeprüft zu übernehmen.
             this._selectedColor = null;
             this._clearPayload();
             if (this._ralInput && this._ralInput.value.trim() !== '') {
@@ -194,14 +194,14 @@ export default class RcColorPickerPlugin extends Plugin {
         this._showError(reason.message);
 
         // Fokus auf die Ursache setzen — sonst steht der Nutzer am Kaufen-Button und
-        // die Meldung weiter oben bleibt fuer Tastatur und AT unauffindbar (WCAG 3.3.1).
+        // die Meldung weiter oben bleibt für Tastatur und AT unauffindbar (WCAG 3.3.1).
         if (reason.focusTarget) {
             reason.focusTarget.focus();
         }
     }
 
     /**
-     * Gibt zurueck, warum das Absenden blockiert wird — oder null, wenn nichts dagegen spricht.
+     * Gibt zurück, warum das Absenden blockiert wird — oder null, wenn nichts dagegen spricht.
      */
     _blockingReason() {
         const ralValue = this._ralInput ? this._ralInput.value.trim() : '';
@@ -224,9 +224,9 @@ export default class RcColorPickerPlugin extends Plugin {
     }
 
     /**
-     * Markiert das RAL-Feld als (un)gueltig. `aria-invalid` allein wird beim Betreten des Feldes
-     * angesagt; die Begruendung haengt zusaetzlich per aria-describedby daran, damit sie auch
-     * beim spaeteren Zurueckkehren noch vorgelesen wird.
+     * Markiert das RAL-Feld als (un)gültig. `aria-invalid` allein wird beim Betreten des Feldes
+     * angesagt; die Begründung hängt zusätzlich per aria-describedby daran, damit sie auch
+     * beim späteren Zurückkehren noch vorgelesen wird.
      */
     _setRalValidity(valid) {
         if (!this._ralInput) {
@@ -288,7 +288,7 @@ export default class RcColorPickerPlugin extends Plugin {
 
     /**
      * Feuert das generische rcSuffixChanged-Event (Pflicht laut Plugin-Interaktionsprotokoll)
-     * UND das plugin-spezifische rcColorPickerChanged-Event (Hook fuer interne Listener).
+     * UND das plugin-spezifische rcColorPickerChanged-Event (Hook für interne Listener).
      */
     _dispatchSuffixChanged(detail) {
         const payload = { source: 'rcColorPicker', ...detail };
@@ -298,8 +298,8 @@ export default class RcColorPickerPlugin extends Plugin {
     }
 
     /**
-     * Setzt die LineItem-ID nur wenn kein Plugin mit hoeherer Prioritaet vorhanden ist.
-     * Prioritaet: RcCartSplitter > RcCustomFields > RcDynamicPrice > RcColorPicker
+     * Setzt die LineItem-ID nur wenn kein Plugin mit höherer Priorität vorhanden ist.
+     * Priorität: RcCartSplitter > RcCustomFields > RcDynamicPrice > RcColorPicker
      */
     _updateLineItemId() {
         if (!this._lineItemIdInput) {
@@ -338,7 +338,7 @@ export default class RcColorPickerPlugin extends Plugin {
     }
 
     /**
-     * Liest die Storefront-Locale aus `<html lang="...">` und faellt auf de-DE zurueck,
+     * Liest die Storefront-Locale aus `<html lang="...">` und fällt auf de-DE zurück,
      * wenn die Locale in der RAL-Map nicht hinterlegt ist.
      */
     _detectLocale() {

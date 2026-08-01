@@ -1,5 +1,5 @@
-// Vertrags-Test fuer rc-color-picker.plugin.js. Verankert die SUFFIX_CHANGED_EVENT-Konstante,
-// damit ein Wert-Drift (Tippfehler, Refactor) sofort auffaellt — Plugin-Interaktionsprotokoll.
+// Vertrags-Test für rc-color-picker.plugin.js. Verankert die SUFFIX_CHANGED_EVENT-Konstante,
+// damit ein Wert-Drift (Tippfehler, Refactor) sofort auffällt — Plugin-Interaktionsprotokoll.
 // Zero-Dependency: Node-Standardbibliothek (node:test).
 
 import { describe, test } from 'node:test';

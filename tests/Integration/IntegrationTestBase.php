@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 
 /**
- * Basisklasse fuer Integration-Tests gegen den Shopware-Test-Kernel.
+ * Basisklasse für Integration-Tests gegen den Shopware-Test-Kernel.
  * IntegrationTestBehaviour kapselt Kernel-Lifecycle, Test-Container und DB-Rollback je Test,
- * damit Tests reihenfolgenunabhaengig bleiben.
+ * damit Tests reihenfolgenunabhängig bleiben.
  */
 abstract class IntegrationTestBase extends TestCase
 {

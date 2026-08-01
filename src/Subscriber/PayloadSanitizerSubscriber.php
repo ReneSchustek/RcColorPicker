@@ -76,7 +76,7 @@ final class PayloadSanitizerSubscriber implements EventSubscriberInterface
             }
 
             if (isset($item['payload'][self::HEX_KEY]) && \is_string($item['payload'][self::HEX_KEY])) {
-                // Hex strikt validieren: ein ungueltiger Wert wuerde im Inline-Style
+                // Hex strikt validieren: ein ungültiger Wert würde im Inline-Style
                 // CSS-Injection erlauben (auch Headless-Clients umgehen das JS).
                 $lineItems[$id]['payload'][self::HEX_KEY] = ColorValidator::sanitizeHex($item['payload'][self::HEX_KEY]);
                 $changed = true;

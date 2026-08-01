@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 # Hinweis zu Integration-Tests:
-# Die Integration-Suite (tests/Integration/**) benoetigt den Shopware-TestBootstrapper
+# Die Integration-Suite (tests/Integration/**) benötigt den Shopware-TestBootstrapper
 # mit `addCallingPlugin()` — funktioniert nur in einer kompletten Shopware-Installation,
 # nicht im Plugin-Solo-Repo. Sie läuft daher auf einer vollständigen Shopware-Installation via
 # `.ai/checker/brief-done-gate.sh` und nicht in GitHub Actions.

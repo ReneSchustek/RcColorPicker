@@ -15,8 +15,8 @@ use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 final class RcColorPicker extends Plugin
 {
     /**
-     * Ab dieser Version uebernimmt Migration1777248000RenameCustomFields den
-     * Set-/Feld-Rename. Der Installer wuerde davor versuchen, das alte Set per
+     * Ab dieser Version übernimmt Migration1777248000RenameCustomFields den
+     * Set-/Feld-Rename. Der Installer würde davor versuchen, das alte Set per
      * DAL umzubenennen, was Shopware mit "name is immutable" blockiert.
      */
     private const MIGRATION_INTRODUCED_IN = '2.0.0';
@@ -48,7 +48,7 @@ final class RcColorPicker extends Plugin
     }
 
     /**
-     * Waehrend install/update/uninstall sind plugin-eigene Services nicht im DI-Container
+     * Während install/update/uninstall sind plugin-eigene Services nicht im DI-Container
      * (Shopware-Lifecycle). Deshalb Installer direkt instanziieren und ausschliesslich
      * Core-Services aus dem Container holen.
      */

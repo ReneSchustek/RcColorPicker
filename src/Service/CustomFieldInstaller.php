@@ -27,7 +27,7 @@ final class CustomFieldInstaller
     public function install(Context $context): void
     {
         // Idempotenz: nach Migration v1->v2 existieren Set + Feld bereits unter neuem Namen.
-        // Beide IDs explizit mitgeben, sonst legt DAL fuer das nested customFields-Element
+        // Beide IDs explizit mitgeben, sonst legt DAL für das nested customFields-Element
         // einen Datensatz mit neuer UUID an und kollidiert mit dem bestehenden Namen.
         $existing = $this->loadExistingSet($context);
 
@@ -89,7 +89,7 @@ final class CustomFieldInstaller
 
     /**
      * Liefert die IDs des bestehenden Sets und des enthaltenen `*_enabled`-Felds.
-     * Beide werden beim Upsert benoetigt, damit DAL die vorhandenen Datensaetze
+     * Beide werden beim Upsert benötigt, damit DAL die vorhandenen Datensätze
      * per Primary Key matcht statt neue UUIDs zu erzeugen.
      *
      * @return array{setId: string, fieldId: string|null}|null

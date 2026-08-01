@@ -239,7 +239,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
     }
 
     /**
-     * Repraesentativer Ausschnitt aus dem Shopware-Default-HTML-Template,
+     * Repräsentativer Ausschnitt aus dem Shopware-Default-HTML-Template,
      * der den für den Anchor relevanten Bereich abbildet.
      */
     private function defaultHtmlFragment(): string

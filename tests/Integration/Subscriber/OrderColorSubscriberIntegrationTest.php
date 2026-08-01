@@ -41,7 +41,7 @@ final class OrderColorSubscriberIntegrationTest extends IntegrationTestBase
             }
         }
 
-        self::assertCount(1, $matchingPriorities, 'OrderColorSubscriber muss genau einmal fuer CheckoutOrderPlacedEvent registriert sein.');
+        self::assertCount(1, $matchingPriorities, 'OrderColorSubscriber muss genau einmal für CheckoutOrderPlacedEvent registriert sein.');
         self::assertSame(-500, $matchingPriorities[0]);
     }
 }

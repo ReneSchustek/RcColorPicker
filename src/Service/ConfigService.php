@@ -63,7 +63,7 @@ final class ConfigService
                 continue;
             }
 
-            // Ungueltige Hex-Werte verwerfen — sonst landet "background-color: notahex" im DOM.
+            // Ungültige Hex-Werte verwerfen — sonst landet "background-color: notahex" im DOM.
             if (ColorValidator::sanitizeHex($parts[2]) === '') {
                 continue;
             }

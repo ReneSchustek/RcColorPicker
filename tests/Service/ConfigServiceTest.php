@@ -88,7 +88,7 @@ final class ConfigServiceTest extends TestCase
         yield 'kein-rautezeichen' => ['FFFFFF'];
         yield 'zu-kurz' => ['#FF'];
         yield 'sieben-zeichen' => ['#FFFFFF1'];
-        yield 'unzulaessige-zeichen' => ['#GGHHII'];
+        yield 'unzulässige-zeichen' => ['#GGHHII'];
         yield 'leer' => [''];
         yield 'wort' => ['notahex'];
         yield 'rgb-notation' => ['rgb(255,255,255)'];
@@ -103,7 +103,7 @@ final class ConfigServiceTest extends TestCase
 
         $colors = $service->getStandardColors();
 
-        self::assertCount(1, $colors, sprintf('Hex "%s" haette nicht akzeptiert werden duerfen', $hex));
+        self::assertCount(1, $colors, sprintf('Hex "%s" hätte nicht akzeptiert werden duerfen', $hex));
         self::assertSame('RAL 7016', $colors[0]['ral']);
     }
 
@@ -128,7 +128,7 @@ final class ConfigServiceTest extends TestCase
             'RcColorPicker.config.standardColors' => sprintf('RAL 9010;Reinweiß;%s', $hex),
         ]);
 
-        self::assertCount(1, $service->getStandardColors(), sprintf('Hex "%s" haette akzeptiert werden muessen', $hex));
+        self::assertCount(1, $service->getStandardColors(), sprintf('Hex "%s" hätte akzeptiert werden müssen', $hex));
     }
 
     public function testGetStandardColorsHardLimit(): void

@@ -1,5 +1,5 @@
 .rc-color-picker {
-    // Browser-Default-Border/Padding fuer <fieldset> entfernen — wir nutzen es nur fuer a11y-Semantik
+    // Browser-Default-Border/Padding für <fieldset> entfernen — wir nutzen es nur für a11y-Semantik
     border: 0;
     padding: 0;
     margin: 0 0 1rem;
@@ -25,7 +25,7 @@
         display: inline-flex;
     }
 
-    // Das Radio traegt den Auswahl-Zustand, ist aber nicht die sichtbare Flaeche.
+    // Das Radio trägt den Auswahl-Zustand, ist aber nicht die sichtbare Fläche.
     // Nicht `display: none` und nicht `visibility: hidden` — beides nimmt es aus der
     // Tab-Reihenfolge und damit aus der Pfeiltasten-Navigation der Radio-Gruppe.
     &__swatch-input {
@@ -56,8 +56,8 @@
         }
     }
 
-    // Auswahl-Rahmen haengt am :checked des Radios, nicht mehr an einer per JS
-    // gesetzten Klasse — Zustand und Optik koennen so nicht auseinanderlaufen.
+    // Auswahl-Rahmen hängt am :checked des Radios, nicht mehr an einer per JS
+    // gesetzten Klasse — Zustand und Optik können so nicht auseinanderlaufen.
     &__swatch-input:checked + &__swatch {
         border-color: var(--bs-primary, #0d6efd);
     }
@@ -69,7 +69,7 @@
     }
 
     // Im erzwungenen Farbmodus (Windows-Kontrastdesign) werden Rahmenfarben ersetzt.
-    // Ohne diese Regel waere die Auswahl dort nicht mehr erkennbar.
+    // Ohne diese Regel wäre die Auswahl dort nicht mehr erkennbar.
     @media (forced-colors: active) {
         &__swatch-input:checked + &__swatch {
             outline: 3px solid CanvasText;
@@ -82,9 +82,9 @@
         width: 100%;
         height: 100%;
         border-radius: 2px;
-        // Diese Linie ist die einzige Begrenzung einer nicht gewaehlten Farbflaeche. Bei hellen
-        // Farben (RAL 9010 Reinweiss) auf hellem Grund traegt sie allein die Erkennbarkeit des
-        // Bedienelements. Mit den frueheren 15 % Deckkraft lag sie bei 1,41:1 und damit unter der
+        // Diese Linie ist die einzige Begrenzung einer nicht gewählten Farbfläche. Bei hellen
+        // Farben (RAL 9010 Reinweiss) auf hellem Grund trägt sie allein die Erkennbarkeit des
+        // Bedienelements. Mit den früheren 15 % Deckkraft lag sie bei 1,41:1 und damit unter der
         // Anforderung von 3:1 (WCAG 1.4.11); 45 % ergeben gemessene 3,41:1 auf weissem Grund.
         border: 1px solid rgba(0, 0, 0, 0.45);
     }
@@ -94,13 +94,13 @@
     }
 
     // Die Textfarbe kommt bewusst von Bootstraps `.invalid-feedback`. Ein eigenes
-    // `color: var(--bs-danger)` waere im hellen Modus deckungsgleich (gemessen beide #c20017),
-    // wuerde aber die Anpassung des Frameworks an einen dunklen Modus aushebeln.
+    // `color: var(--bs-danger)` wäre im hellen Modus deckungsgleich (gemessen beide #c20017),
+    // würde aber die Anpassung des Frameworks an einen dunklen Modus aushebeln.
     &__error {
         font-size: 0.875em;
     }
 
-    // Ungueltige RAL-Eingabe auch sichtbar markieren, nicht nur ueber aria-invalid
+    // Ungültige RAL-Eingabe auch sichtbar markieren, nicht nur über aria-invalid
     &__ral-input[aria-invalid='true'] {
         border-color: var(--bs-form-invalid-border-color, var(--bs-danger, #dc3545));
     }

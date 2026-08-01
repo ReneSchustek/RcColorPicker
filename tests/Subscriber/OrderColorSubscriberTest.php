@@ -259,7 +259,7 @@ final class OrderColorSubscriberTest extends TestCase
     }
 
     /**
-     * Derselbe Artikel in zwei Farben ist zwei Positionen. Jede Position traegt ihre eigene
+     * Derselbe Artikel in zwei Farben ist zwei Positionen. Jede Position trägt ihre eigene
      * Farbe — die erste darf von der zweiten nicht überschrieben werden.
      */
     public function testZweiFarbenBleibenZweiEigenstaendigePositionen(): void
@@ -286,7 +286,7 @@ final class OrderColorSubscriberTest extends TestCase
         $repository->expects(self::once())
             ->method('update')
             ->with(self::callback(function (array $updates): bool {
-                self::assertCount(2, $updates, 'Beide Positionen muessen geschrieben werden.');
+                self::assertCount(2, $updates, 'Beide Positionen müssen geschrieben werden.');
 
                 $byId = array_column($updates, 'customFields', 'id');
                 self::assertSame('RAL 3020', $byId['item-rot']['ruhrcoder_color_picker_ral']);
@@ -305,7 +305,7 @@ final class OrderColorSubscriberTest extends TestCase
 
         $subscriber->onOrderPlaced($this->createPlacedEvent($order));
 
-        // Auch im Speicher behaelt jede Position ihre eigene Farbe.
+        // Auch im Speicher behält jede Position ihre eigene Farbe.
         self::assertSame('RAL 3020', $rot->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
         self::assertSame('RAL 5010', $blau->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
     }

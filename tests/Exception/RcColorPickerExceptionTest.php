@@ -55,6 +55,6 @@ final class RcColorPickerExceptionTest extends TestCase
             RcColorPickerException::CODE_ORDER_LINE_ITEM_UPDATE_FAILED,
         ];
 
-        self::assertSame($codes, array_unique($codes), 'Alle Error-Codes muessen eindeutig sein');
+        self::assertSame($codes, array_unique($codes), 'Alle Error-Codes müssen eindeutig sein');
     }
 }

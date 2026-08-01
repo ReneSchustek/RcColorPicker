@@ -1,6 +1,6 @@
-// Tests fuer die Auswahl-Semantik und die Freitext-Validierung des Color-Pickers.
+// Tests für die Auswahl-Semantik und die Freitext-Validierung des Color-Pickers.
 //
-// Hintergrund: Die Auswahl haengt nicht mehr an einer CSS-Klasse, sondern am :checked des
+// Hintergrund: Die Auswahl hängt nicht mehr an einer CSS-Klasse, sondern am :checked des
 // Radios, und der Kaufen-Button wird nicht mehr deaktiviert — die Absende-Sperre liegt jetzt
 // allein in _blockingReason(). Beide Punkte sind still brechbar und deshalb hier festgenagelt.
 //
@@ -31,7 +31,7 @@ const stripped = rawSource
     .replace(/^import [^\n]*\n/gm, '')
     .replace(/^export default /m, '');
 
-// Ein einziger echter RAL-Eintrag reicht — geprueft wird die Verzweigung, nicht die Tabelle.
+// Ein einziger echter RAL-Eintrag reicht — geprüft wird die Verzweigung, nicht die Tabelle.
 const wrapped = `
     class Plugin {
         init() {}
@@ -86,7 +86,7 @@ function makeInstance({ required = false, mode = 'standard', withRalInput = true
     instance._ralInput = withRalInput ? makeElement({ 'aria-describedby': 'rcCpRalHint_TEST' }) : null;
     instance._swatchInputs = [makeElement(), makeElement()];
 
-    // Payload- und Anzeige-Wege sind hier nicht Gegenstand der Pruefung.
+    // Payload- und Anzeige-Wege sind hier nicht Gegenstand der Prüfung.
     instance.payloadCalls = [];
     instance.clearCalls = 0;
     instance._setPayload = (...args) => instance.payloadCalls.push(args);
@@ -101,7 +101,7 @@ function makeInstance({ required = false, mode = 'standard', withRalInput = true
 }
 
 describe('_onSwatchChange — Auswahl kommt vom Radio', () => {
-    test('uebernimmt Werte aus dem Datensatz des Radios', () => {
+    test('übernimmt Werte aus dem Datensatz des Radios', () => {
         const instance = makeInstance();
         const radio = makeElement();
         radio.dataset = { ral: 'RAL 7016', name: 'Anthrazitgrau', hex: '#293133' };
@@ -124,13 +124,13 @@ describe('_onSwatchChange — Auswahl kommt vom Radio', () => {
 
         instance._onSwatchChange(radio);
 
-        // Das Abwaehlen erledigt der Browser ueber den gemeinsamen name — nicht das Plugin.
+        // Das Abwählen erledigt der Browser über den gemeinsamen name — nicht das Plugin.
         assert.strictEqual(instance._swatchInputs[0].checked, true);
     });
 });
 
 describe('_onRalInput — unbekannte Codes werden nicht bestellt', () => {
-    test('bekannter Code setzt Payload und gilt als gueltig', () => {
+    test('bekannter Code setzt Payload und gilt als gültig', () => {
         const instance = makeInstance({ mode: 'custom' });
         instance._ralInput.value = 'ral7016';
 
@@ -152,7 +152,7 @@ describe('_onRalInput — unbekannte Codes werden nicht bestellt', () => {
         assert.strictEqual(instance._ralInput.getAttribute('aria-invalid'), 'true');
     });
 
-    test('haengt die Fehler-id an aria-describedby und nimmt sie wieder weg', () => {
+    test('hängt die Fehler-id an aria-describedby und nimmt sie wieder weg', () => {
         const instance = makeInstance({ mode: 'custom' });
 
         instance._ralInput.value = 'asdf';
@@ -171,7 +171,7 @@ describe('_onRalInput — unbekannte Codes werden nicht bestellt', () => {
         );
     });
 
-    test('leere Eingabe ist nicht ungueltig, nur leer', () => {
+    test('leere Eingabe ist nicht ungültig, nur leer', () => {
         const instance = makeInstance({ mode: 'custom' });
         instance._ralInput.value = '   ';
 
@@ -192,7 +192,7 @@ describe('_blockingReason — die Absende-Sperre', () => {
         assert.strictEqual(reason.focusTarget, instance._ralInput);
     });
 
-    test('blockiert fehlende Pflichtfarbe und fuehrt zum ersten Swatch', () => {
+    test('blockiert fehlende Pflichtfarbe und führt zum ersten Swatch', () => {
         const instance = makeInstance({ required: true, mode: 'standard' });
 
         const reason = instance._blockingReason();
@@ -201,20 +201,20 @@ describe('_blockingReason — die Absende-Sperre', () => {
         assert.strictEqual(reason.focusTarget, instance._swatchInputs[0]);
     });
 
-    test('fuehrt im Freitext-Modus zum Eingabefeld statt zum Swatch', () => {
+    test('führt im Freitext-Modus zum Eingabefeld statt zum Swatch', () => {
         const instance = makeInstance({ required: true, mode: 'custom' });
 
         assert.strictEqual(instance._blockingReason().focusTarget, instance._ralInput);
     });
 
-    test('laesst durch, wenn eine Farbe gewaehlt ist', () => {
+    test('lässt durch, wenn eine Farbe gewählt ist', () => {
         const instance = makeInstance({ required: true });
         instance._selectedColor = { ral: 'RAL 7016', name: 'Anthrazitgrau', hex: '#293133' };
 
         assert.strictEqual(instance._blockingReason(), null);
     });
 
-    test('laesst durch, wenn nichts Pflicht ist und nichts eingegeben wurde', () => {
+    test('lässt durch, wenn nichts Pflicht ist und nichts eingegeben wurde', () => {
         const instance = makeInstance({ required: false, mode: 'custom' });
 
         assert.strictEqual(instance._blockingReason(), null);
@@ -255,15 +255,15 @@ describe('_onSubmit — Meldung statt stummer Sperre', () => {
             stopImmediatePropagation: () => {},
         });
 
-        assert.strictEqual(prevented, 0, 'ein gueltiges Formular darf nicht blockiert werden');
+        assert.strictEqual(prevented, 0, 'ein gültiges Formular darf nicht blockiert werden');
     });
 });
 
 describe('Regression — der Kaufen-Button wird nicht mehr deaktiviert', () => {
-    test('die Quelle enthaelt kein disabled-Schalten mehr', () => {
+    test('die Quelle enthält kein disabled-Schalten mehr', () => {
         assert.ok(
             !/_disableSubmit|_enableSubmit|submitBtn/.test(rawSource),
-            'ein disabled Submit-Button faellt aus Tab-Reihenfolge und AT-Ansage (WCAG 3.3.1) '
+            'ein disabled Submit-Button fällt aus Tab-Reihenfolge und AT-Ansage (WCAG 3.3.1) '
             + 'und macht die Fehlermeldung unerreichbar',
         );
     });

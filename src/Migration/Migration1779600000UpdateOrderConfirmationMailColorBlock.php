@@ -12,16 +12,16 @@ use Shopware\Core\Framework\Uuid\Uuid;
 /**
  * Erweitert die Mail-Templates vom Typ order_confirmation_mail um einen
  * Farb-Block pro LineItem (HTML- und Plaintext-Variante). Datenquelle ist
- * primaer der LineItem-Payload (rcColorPicker*), Fallback auf die Order-
+ * primär der LineItem-Payload (rcColorPicker*), Fallback auf die Order-
  * LineItem-CustomFields (ruhrcoder_color_picker_*).
  *
  * Zwei Schutzschichten gegen unbeabsichtigtes Ueberschreiben:
- * - Marker-Detection: enthaelt der Inhalt bereits den Marker, wird nichts verändert (idempotent).
+ * - Marker-Detection: enthält der Inhalt bereits den Marker, wird nichts verändert (idempotent).
  * - Anchor-Detection: ohne den exakten Default-Anchor (Shopware-Default-Label-Ausgabe) wird nicht
  *   gepatcht. Damit bleiben shop-spezifische Anpassungen unangetastet — die manuelle Erweiterung
  *   ist in der README dokumentiert.
  *
- * Der Anchor-Skip wird nach `log_entry` protokolliert (WARNING). Sonst faende der Betreiber erst
+ * Der Anchor-Skip wird nach `log_entry` protokolliert (WARNING). Sonst fände der Betreiber erst
  * an der ersten Bestellbestätigung ohne Farbe heraus, dass sein angepasstes Template Handarbeit
  * braucht.
  */
@@ -98,7 +98,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlock extends Mig
     }
 
     /**
-     * Patcht den HTML-Inhalt: fuegt den Farb-Block direkt nach dem
+     * Patcht den HTML-Inhalt: fügt den Farb-Block direkt nach dem
      * `</div>`-Tag ein, das auf den Label-Anchor folgt. Skip-Bedingungen:
      * - Inhalt leer
      * - Marker bereits vorhanden (idempotent)
@@ -133,7 +133,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlock extends Mig
     }
 
     /**
-     * Patcht den Plaintext-Inhalt: fuegt den Farb-Block direkt nach der
+     * Patcht den Plaintext-Inhalt: fügt den Farb-Block direkt nach der
      * Zeile mit dem Label-Anchor ein. Skip-Bedingungen analog HTML.
      *
      * Nur für interne Verwendung und Tests public.
@@ -191,7 +191,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlock extends Mig
      * injiziert — nur die Connection. Der direkte Insert ist derselbe Weg, den auch der
      * Monolog-Handler des Cores nimmt, und macht den Fall im Admin-Log sichtbar.
      *
-     * Ohne diesen Eintrag verlaeuft der Skip lautlos: Der Betreiber haelt das Feature für
+     * Ohne diesen Eintrag verläuft der Skip lautlos: Der Betreiber hält das Feature für
      * installiert, während die Bestellbestätigung die Farbe nie zeigt.
      *
      * @param list<array{mailTemplateId: string, languageId: string, variant: string}> $skipped
@@ -202,14 +202,14 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlock extends Mig
             'id' => Uuid::randomBytes(),
             'message' => \sprintf(
                 'RcColorPicker: %d angepasste Mail-Template-Variante(n) ohne Default-Anchor übersprungen — '
-                . 'der Farb-Block fehlt dort und muss laut README von Hand eingefuegt werden.',
+                . 'der Farb-Block fehlt dort und muss laut README von Hand eingefügt werden.',
                 \count($skipped),
             ),
             'level' => self::LOG_LEVEL_WARNING,
             'channel' => self::LOG_CHANNEL,
             'context' => json_encode(['skipped' => $skipped], \JSON_THROW_ON_ERROR),
             'extra' => '[]',
-            // UTC wie alle Shopware-Storage-Zeitstempel — sonst haengt die Log-Zeit an der Server-TZ.
+            // UTC wie alle Shopware-Storage-Zeitstempel — sonst hängt die Log-Zeit an der Server-TZ.
             'created_at' => (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))
                 ->format(Defaults::STORAGE_DATE_TIME_FORMAT),
         ]);

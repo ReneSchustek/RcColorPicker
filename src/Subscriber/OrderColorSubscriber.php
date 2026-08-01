@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Überträgt die Farbauswahl aus dem LineItem-Payload in die Order-LineItem-CustomFields.
  *
- * Prioritaet -500: niedrig genug, damit andere Subscriber die Werte nicht überschreiben.
+ * Priorität -500: niedrig genug, damit andere Subscriber die Werte nicht überschreiben.
  */
 final class OrderColorSubscriber implements EventSubscriberInterface
 {

@@ -1,12 +1,12 @@
 // Smoke-Test für das Ruhrcoder-Plugin-Interaktionsprotokoll.
 //
-// Sind mehrere Ruhrcoder-Plugins auf demselben Produkt aktiv, darf nur das mit der hoechsten
-// Prioritaet die LineItem-ID setzen. RcColorPicker steht auf Platz 4 — er muss also in jeder
+// Sind mehrere Ruhrcoder-Plugins auf demselben Produkt aktiv, darf nur das mit der höchsten
+// Priorität die LineItem-ID setzen. RcColorPicker steht auf Platz 4 — er muss also in jeder
 // Kombination die Finger von der ID lassen und trotzdem seinen Suffix beitragen.
 //
-// Die Kennzeichnung des ID-Hoheitstraegers kommt in zwei erlaubten Varianten: als Attribut an
-// einem Nachkommen (Twig) oder als dataset am Form selbst (JS). Beide Wege muessen greifen —
-// genau diese Luecke hat 2026-07-17 in der Storefront eine Aufteilung angezeigt, die der Server
+// Die Kennzeichnung des ID-Hoheitsträgers kommt in zwei erlaubten Varianten: als Attribut an
+// einem Nachkommen (Twig) oder als dataset am Form selbst (JS). Beide Wege müssen greifen —
+// genau diese Lücke hat 2026-07-17 in der Storefront eine Aufteilung angezeigt, die der Server
 // nicht kannte.
 //
 // Zero-Dependency: Node-Standardbibliothek (node:test).
@@ -53,7 +53,7 @@ const FARBE = { ral: 'RAL 9010', name: 'Reinweiß', hex: '#FFFFFF' };
 const FARB_SUFFIX = 'cRAL9010';
 
 /**
- * Die Matrix als Daten, nicht als Copy-Paste — faellt ein Plugin weg (z. B. CartSplitter nach
+ * Die Matrix als Daten, nicht als Copy-Paste — fällt ein Plugin weg (z. B. CartSplitter nach
  * einem EOL), verschwindet mit der Zeile auch der Testfall, ohne dass Testlogik anzufassen ist.
  *
  * `idHoheit` beschreibt, wie das priorisierte Plugin sich kennzeichnet:
@@ -98,7 +98,7 @@ const ID_UNBERUEHRT = 'VOM-SHOPWARE-STANDARD';
 
 /**
  * Form-Double. `querySelector` matcht bewusst nur Nachkommen und niemals das Form selbst —
- * ohne diese DOM-Semantik prueft der Test am Kern vorbei.
+ * ohne diese DOM-Semantik prüft der Test am Kern vorbei.
  */
 function makeForm(szenario) {
     const dataset = { ...szenario.fremdeSuffixe };
@@ -154,7 +154,7 @@ describe('Plugin-Interaktion — wer die LineItem-ID setzen darf', () => {
                 assert.strictEqual(
                     instance._lineItemIdInput.value,
                     ID_UNBERUEHRT,
-                    'ein Plugin hoeherer Prioritaet ist aktiv — die ID gehoert ihm',
+                    'ein Plugin höherer Priorität ist aktiv — die ID gehört ihm',
                 );
             } else {
                 assert.strictEqual(instance._lineItemIdInput.value, szenario.erwarteteId);
@@ -188,7 +188,7 @@ describe('Plugin-Interaktion — wer die LineItem-ID setzen darf', () => {
     }
 });
 
-describe('Suffix-Sammlung — fremde Beitraege gehen nicht verloren', () => {
+describe('Suffix-Sammlung — fremde Beiträge gehen nicht verloren', () => {
     test('sammelt eigenen und fremden Suffix, stabil sortiert', () => {
         const { instance, form } = makeInstance({
             fremdeSuffixe: { rcMeterSuffix: 'mm1190' },
@@ -199,10 +199,10 @@ describe('Suffix-Sammlung — fremde Beitraege gehen nicht verloren', () => {
 
         assert.strictEqual(instance._collectAllSuffixes(), `${FARB_SUFFIX}-mm1190`);
         assert.strictEqual(instance._lineItemIdInput.value, `${PRODUKT_ID}-${FARB_SUFFIX}-mm1190`);
-        assert.strictEqual(form.dataset.rcMeterSuffix, 'mm1190', 'fremder Suffix bleibt unberuehrt');
+        assert.strictEqual(form.dataset.rcMeterSuffix, 'mm1190', 'fremder Suffix bleibt unberührt');
     });
 
-    test('leere Suffixe zaehlen nicht mit', () => {
+    test('leere Suffixe zählen nicht mit', () => {
         const { instance } = makeInstance({
             fremdeSuffixe: { rcMeterSuffix: '' },
             idHoheit: null,
@@ -215,7 +215,7 @@ describe('Suffix-Sammlung — fremde Beitraege gehen nicht verloren', () => {
 
     test('Datenfelder ohne Suffix-Konvention werden ignoriert', () => {
         const { instance } = makeInstance({
-            fremdeSuffixe: { rcIrgendwas: 'wert', meterSuffix: 'ohne-rc-praefix' },
+            fremdeSuffixe: { rcIrgendwas: 'wert', meterSuffix: 'ohne-rc-präfix' },
             idHoheit: null,
         });
 
@@ -225,8 +225,8 @@ describe('Suffix-Sammlung — fremde Beitraege gehen nicht verloren', () => {
     });
 });
 
-describe('Zuruecknehmen der Farbe', () => {
-    test('leert den eigenen Suffix, feuert trotzdem und laesst fremde stehen', () => {
+describe('Zurücknehmen der Farbe', () => {
+    test('leert den eigenen Suffix, feuert trotzdem und lässt fremde stehen', () => {
         const { instance, form } = makeInstance({
             fremdeSuffixe: { rcMeterSuffix: 'mm1190' },
             idHoheit: null,
