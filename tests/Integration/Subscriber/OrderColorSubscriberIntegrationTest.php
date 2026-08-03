@@ -13,14 +13,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 #[CoversClass(OrderColorSubscriber::class)]
 final class OrderColorSubscriberIntegrationTest extends IntegrationTestBase
 {
-    public function testSubscriberWirdVomContainerAufgeloest(): void
+    public function testSubscriberIsResolvedByTheContainer(): void
     {
         $subscriber = static::getContainer()->get(OrderColorSubscriber::class);
 
         self::assertInstanceOf(OrderColorSubscriber::class, $subscriber);
     }
 
-    public function testSubscriberIstFuerCheckoutOrderPlacedEventMitPrioritaetMinus500Registriert(): void
+    public function testSubscriberIsRegisteredForTheCheckoutOrderPlacedEventWithPriorityMinus500(): void
     {
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = static::getContainer()->get('event_dispatcher');

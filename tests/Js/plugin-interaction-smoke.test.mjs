@@ -49,7 +49,7 @@ const wrapped = `
 const RcColorPickerPlugin = new Function(wrapped)();
 
 const PRODUKT_ID = 'P1';
-const FARBE = { ral: 'RAL 9010', name: 'Reinweiß', hex: '#FFFFFF' };
+const COLOR = { ral: 'RAL 9010', name: 'Reinweiß', hex: '#FFFFFF' };
 const FARB_SUFFIX = 'cRAL9010';
 
 /**
@@ -148,7 +148,7 @@ describe('Plugin-Interaktion — wer die LineItem-ID setzen darf', () => {
         test(`${szenario.name}: ID-Hoheit wird respektiert`, () => {
             const { instance, form } = makeInstance(szenario);
 
-            instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+            instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
 
             if (szenario.erwarteteId === null) {
                 assert.strictEqual(
@@ -170,7 +170,7 @@ describe('Plugin-Interaktion — wer die LineItem-ID setzen darf', () => {
         test(`${szenario.name}: Suffix-Event feuert`, () => {
             const { instance, form } = makeInstance(szenario);
 
-            instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+            instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
 
             const generisch = form.ereignisse.filter(
                 e => e.typ === RcColorPickerPlugin.SUFFIX_CHANGED_EVENT,
@@ -195,7 +195,7 @@ describe('Suffix-Sammlung — fremde Beiträge gehen nicht verloren', () => {
             idHoheit: null,
         });
 
-        instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+        instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
 
         assert.strictEqual(instance._collectAllSuffixes(), `${FARB_SUFFIX}-mm1190`);
         assert.strictEqual(instance._lineItemIdInput.value, `${PRODUKT_ID}-${FARB_SUFFIX}-mm1190`);
@@ -208,7 +208,7 @@ describe('Suffix-Sammlung — fremde Beiträge gehen nicht verloren', () => {
             idHoheit: null,
         });
 
-        instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+        instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
 
         assert.strictEqual(instance._collectAllSuffixes(), FARB_SUFFIX);
     });
@@ -219,7 +219,7 @@ describe('Suffix-Sammlung — fremde Beiträge gehen nicht verloren', () => {
             idHoheit: null,
         });
 
-        instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+        instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
 
         assert.strictEqual(instance._collectAllSuffixes(), FARB_SUFFIX);
     });
@@ -232,7 +232,7 @@ describe('Zurücknehmen der Farbe', () => {
             idHoheit: null,
         });
 
-        instance._setPayload(FARBE.ral, FARBE.name, FARBE.hex);
+        instance._setPayload(COLOR.ral, COLOR.name, COLOR.hex);
         form.ereignisse.length = 0;
         instance._clearPayload();
 

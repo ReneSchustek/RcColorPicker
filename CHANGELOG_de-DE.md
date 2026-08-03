@@ -1,5 +1,25 @@
 # Changelog (DE)
 
+## [2.6.0] - 2026-08-03 — Die bestellte Farbe ist die angezeigte, und ohne Farbe geht keine Bestellung durch
+
+> **Deployment:** `php bin/console plugin:update RcColorPicker && php bin/console cache:clear`. Eine neue Migration hebt den Farb-Block der Bestellbestätigung auf v2 und schützt die Vorlage vor Überschreiben durch Shopware.
+
+### Behoben
+
+- **Die Pflichtfarbe wurde nicht durchgesetzt.** Die Prüfung lag allein im Browser und griff selbst dort nicht: Shopwares „In den Warenkorb" hängt am selben Formular und wird zuerst angemeldet — der Artikel war bereits im Warenkorb, bevor die Prüfung lief. Die Fehlermeldung erschien hinter dem sich öffnenden Warenkorb. Jetzt greift ein **Warenkorb-Prüfer auf dem Server**: Ein Artikel ohne Farbe blockiert den Bestellabschluss mit einer Meldung, die den Artikel beim Namen nennt. Der Artikel bleibt im Warenkorb liegen — ihn stillschweigend zu entfernen wäre das schlechtere Verhalten. Das wirkt auch für Anbindungen, die den Browser gar nicht benutzen.
+- **Nach einem Moduswechsel wurde eine andere Farbe bestellt als angezeigt.** Wer eine Standard-Farbe wählte, auf „Eigener RAL" wechselte, dort einen Code eintippte und dann zurück auf „Standard-Farbe" ging, sah ein leeres Formular — bestellt wurde aber der eingetippte RAL-Code. Der Moduswechsel räumt jetzt in beide Richtungen gleich auf: Was nicht sichtbar ausgewählt ist, wird auch nicht bestellt.
+- **Die Farbauswahl fehlte im Kaufbereich auf CMS-Seiten.** Nach einem Variantenwechsel tauschte Shopware das Markup aus — ohne Farbauswahl, ohne Pflichtprüfung, ohne Meldung. Der Kunde bestellte ohne Farbe und merkte nichts. Ursache: Die Konfiguration hing an der Seite, der Kaufbereich rendert aber eine eigene Produkt-Instanz und wird beim Variantenwechsel ganz ohne Seite aufgebaut.
+- **Der Farb-Block wäre bei einem Shopware-Update aus der Bestellbestätigung verschwunden.** Die Vorlage war nicht als „vom Shop angepasst" gekennzeichnet; Shopware hätte sie beim nächsten eigenen Update ersetzt. Ohne Meldung, ohne Fehler. Eine von Hand angepasste Vorlage wird dabei erkannt und in Ruhe gelassen.
+- **Die Eingabeprüfung griff bei der Store-API nicht.** Storefront und Store-API benennen die Positionen unterschiedlich; geprüft wurde nur der Storefront-Name. Ein Farbwert aus einer Headless-Anbindung landete damit ungeprüft im Warenkorb und in der Bestellung.
+- **Die Prüfung beim Bestellabschluss schützte nichts Sichtbares.** Sie fasste nur die Zusatzfelder an; Warenkorb und Bestellbestätigung lesen aber die Positionsdaten. Beides wird jetzt bereinigt.
+- **Eine Standard-Farbe ohne RAL-Code fehlte in der Bestellbestätigung**, obwohl sie im Warenkorb stand.
+
+### Sonstiges
+
+- Eine Anmeldung auf ein Ereignis entfernt, das es in Shopware 6.7 nicht gibt — sie war wirkungslos und verdeckte den CMS-Fehler oben.
+- `destroy()` rief eine Methode der Basisklasse auf, die es nicht gibt; der Aufruf wäre abgebrochen, bevor der Zeitgeber geräumt ist.
+- Testmethoden- und Variablennamen durchgängig auf Englisch umgestellt (48 Methoden), Kommentare bleiben deutsch.
+
 ## [2.5.2] - 2026-07-30 — Das Update bricht nicht mehr ab, wenn alte Feldnamen im Shop liegen
 
 > **Deployment:** `php bin/console plugin:update RcColorPicker && php bin/console cache:clear`.

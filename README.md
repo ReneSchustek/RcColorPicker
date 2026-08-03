@@ -47,7 +47,7 @@ php bin/console cache:clear
 |-------------|-------------|----------|
 | Standard-Farben | Eine Farbe pro Zeile: `RAL-Code;Name;Hex` | 8 Farben |
 | Eigene RAL-Eingabe | Erlaubt Freitext-Eingabe neben Standard-Farben | Aktiv |
-| Farbauswahl Pflicht | Warenkorb-Button deaktiviert ohne Farbauswahl | Aktiv |
+| Farbauswahl Pflicht | Artikel ohne Farbe blockieren den Bestellabschluss — im Browser mit einer Meldung am Formular, serverseitig über einen Warenkorb-Prüfer | Aktiv |
 
 ### Produkt (Custom Fields)
 

@@ -56,6 +56,13 @@ export default class RcColorPickerPlugin extends Plugin {
         this._registerEvents();
     }
 
+    /**
+     * Kein `super.destroy()`: Die Basisklasse des Kerns hat keine solche Methode.
+     *
+     * Der Aufruf war ein sicherer Fehlschlag — er hätte mit `super.destroy is not a function`
+     * abgebrochen, und zwar **nach** dem Abbruch der Zuhörer, aber **vor** dem Räumen des
+     * Zeitgebers. Wer die Methode also je aufrief, bekam genau das Leck, das sie verhindern soll.
+     */
     destroy() {
         // init() kann früh zurückkehren (kein Form, kein Produkt-ID) bevor _abortController gesetzt ist.
         if (this._abortController) {
@@ -65,7 +72,6 @@ export default class RcColorPickerPlugin extends Plugin {
             clearTimeout(this._announceTimeoutHandle);
             this._announceTimeoutHandle = null;
         }
-        super.destroy();
     }
 
     _registerEvents() {
@@ -89,7 +95,23 @@ export default class RcColorPickerPlugin extends Plugin {
         });
 
         if (this._form) {
-            this._form.addEventListener('submit', (e) => this._onSubmit(e), opts);
+            // **Einfangphase am `document`, nicht am Formular.**
+            //
+            // Shopwares `AddToCart` hängt auf demselben `<form>` und wird vom PluginManager
+            // zuerst angemeldet — der Kern registriert sein Plugin, bevor unser Bündel überhaupt
+            // geladen ist. Bei Zuhörern am selben Element entscheidet allein die
+            // Anmeldereihenfolge, nicht die Phase; `stopImmediatePropagation()` kam deshalb zu
+            // spät: `add-to-cart.plugin.js` hatte den Artikel schon per Hintergrundanfrage im
+            // Warenkorb, während die Fehlermeldung hinter dem Warenkorb-Auszug erschien.
+            //
+            // Ein Zuhörer in der Einfangphase eines Vorfahren läuft dagegen **vor** allen
+            // Zuhörern am Ziel. `stopPropagation()` dort verhindert, dass das Ereignis das
+            // Formular überhaupt erreicht.
+            document.addEventListener('submit', (e) => {
+                if (e.target === this._form) {
+                    this._onSubmit(e);
+                }
+            }, { ...opts, capture: true });
         }
     }
 
@@ -142,27 +164,43 @@ export default class RcColorPickerPlugin extends Plugin {
         this._setRalValidity(false);
     }
 
+    /**
+     * Der Moduswechsel räumt in **beide** Richtungen gleich auf.
+     *
+     * Vorher war er unsymmetrisch: Beim Wechsel nach „Standard" wurde die Nutzlast nur geleert,
+     * wenn keine gültige Farbe gesetzt war. Ein zuvor eingegebener gültiger RAL-Code hat aber
+     * genau das — er blieb also stehen. Sichtbar war danach der Standard-Modus ohne ausgewählte
+     * Kachel, bestellt wurde der alte RAL-Code. Der Kunde bekam eine Farbe, die im Formular
+     * nirgends mehr stand.
+     *
+     * Deshalb hier: erst alles zurücknehmen, dann neu bewerten, was im Zielmodus **tatsächlich**
+     * ausgewählt ist. Was nicht sichtbar ist, wird auch nicht bestellt.
+     */
     _onModeChange(mode) {
         this._mode = mode;
 
+        this._selectedColor = null;
+        this._clearPayload();
+        this._hideSelectedName();
+
         if (mode === 'standard') {
             this._swatchContainer.hidden = false;
-            this._selectedNameEl.hidden = !this._selectedColor;
             if (this._customContainer) {
                 this._customContainer.hidden = true;
             }
             if (this._ralInput) {
                 this._ralInput.value = '';
                 this._setRalValidity(true);
+                this._hideRalPreview();
             }
 
-            if (!this._selectedColor || this._selectedColor.hex === '') {
-                this._selectedColor = null;
-                this._clearPayload();
+            // Eine Kachel kann noch abgehakt sein, wenn der Kunde nur kurz umgeschaltet hat.
+            const checked = Array.from(this._swatchInputs).find(input => input.checked);
+            if (checked) {
+                this._onSwatchChange(checked);
             }
         } else {
             this._swatchContainer.hidden = true;
-            this._selectedNameEl.hidden = true;
             if (this._customContainer) {
                 this._customContainer.hidden = false;
             }
@@ -173,8 +211,6 @@ export default class RcColorPickerPlugin extends Plugin {
             });
 
             // Der Freitext wird beim Moduswechsel neu bewertet, statt ihn ungeprüft zu übernehmen.
-            this._selectedColor = null;
-            this._clearPayload();
             if (this._ralInput && this._ralInput.value.trim() !== '') {
                 this._onRalInput();
             }
@@ -190,7 +226,10 @@ export default class RcColorPickerPlugin extends Plugin {
         }
 
         event.preventDefault();
-        event.stopImmediatePropagation();
+        // `stopPropagation` statt `stopImmediatePropagation`: Der Zuhörer sitzt in der
+        // Einfangphase am `document`; hier verhindert das, dass das Ereignis das Formular und
+        // damit `AddToCart` überhaupt erreicht.
+        event.stopPropagation();
         this._showError(reason.message);
 
         // Fokus auf die Ursache setzen — sonst steht der Nutzer am Kaufen-Button und
@@ -387,6 +426,17 @@ export default class RcColorPickerPlugin extends Plugin {
     _showSelectedName(text) {
         this._selectedNameEl.hidden = false;
         this._announceLive(this._selectedNameEl, text);
+    }
+
+    /**
+     * Blendet den Namen aus **und leert ihn**.
+     *
+     * Nur zu verstecken reichte nicht: Der alte Text stand beim nächsten Einblenden wieder da,
+     * auch wenn die Auswahl längst eine andere war.
+     */
+    _hideSelectedName() {
+        this._selectedNameEl.hidden = true;
+        this._selectedNameEl.textContent = '';
     }
 
     // Live-Region-Cooldown: Element kurz leeren, damit Screenreader die neue Ansage als

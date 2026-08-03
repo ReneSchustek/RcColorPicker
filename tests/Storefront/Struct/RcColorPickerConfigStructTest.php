@@ -11,7 +11,7 @@ use Ruhrcoder\RcColorPicker\Storefront\Struct\RcColorPickerConfigStruct;
 #[CoversClass(RcColorPickerConfigStruct::class)]
 final class RcColorPickerConfigStructTest extends TestCase
 {
-    public function testGetterGebenKorrekteWerteZurueck(): void
+    public function testGettersReturnCorrectValues(): void
     {
         $colors = [
             ['ral' => 'RAL 9010', 'name' => 'Reinweiß', 'hex' => '#FFFFFF'],
@@ -26,7 +26,7 @@ final class RcColorPickerConfigStructTest extends TestCase
         self::assertTrue($struct->isCustomRalLabelVisible());
     }
 
-    public function testLeeresFarbenArray(): void
+    public function testEmptyColorsArray(): void
     {
         $struct = new RcColorPickerConfigStruct([], false, true);
 
@@ -35,7 +35,7 @@ final class RcColorPickerConfigStructTest extends TestCase
         self::assertTrue($struct->isColorRequired());
     }
 
-    public function testCustomRalLabelVisibleStandardmaessigFalse(): void
+    public function testCustomRalLabelVisibleDefaultsToFalse(): void
     {
         $struct = new RcColorPickerConfigStruct([], true, true);
 

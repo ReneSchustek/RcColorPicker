@@ -12,5 +12,8 @@
         "swatchGroupLabel": "Available standard colors",
         "cartLabel": "Color",
         "invalidRal": "Unknown RAL code. Please enter a valid code, for example RAL 7016."
+    },
+    "checkout": {
+        "rc-color-picker-missing-color": "No colour selected for “%name%”. Please choose a colour for this item."
     }
 }

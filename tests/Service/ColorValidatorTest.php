@@ -54,6 +54,6 @@ final class ColorValidatorTest extends TestCase
         yield 'kein-hash' => ['293133'];
         yield 'zu-lang' => ['#2931330011'];
         yield 'nonhex' => ['#zzzzzz'];
-        yield 'leer' => [''];
+        yield 'empty' => [''];
     }
 }

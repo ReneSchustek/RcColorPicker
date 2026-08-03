@@ -22,5 +22,13 @@
             <argument type="service" id="logger"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <!-- Die einzige Stelle, an der sich die Farbpflicht durchsetzen lässt: Sie läuft bei jeder
+             Warenkorb-Neuberechnung, unabhängig davon, wie die Position hineingekommen ist. -->
+        <service id="Ruhrcoder\RcColorPicker\Checkout\Cart\ColorRequiredValidator">
+            <argument type="service" id="Ruhrcoder\RcColorPicker\Service\ConfigService"/>
+            <tag name="shopware.cart.validator"/>
+        </service>
+
     </services>
 </container>

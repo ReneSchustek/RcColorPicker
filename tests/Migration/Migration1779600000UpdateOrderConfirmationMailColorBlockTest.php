@@ -19,32 +19,32 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         $this->migration = new Migration1779600000UpdateOrderConfirmationMailColorBlock();
     }
 
-    public function testTimestampStabilGegenUmbenennung(): void
+    public function testTimestampIsStableAgainstRenaming(): void
     {
         self::assertSame(1779600000, $this->migration->getCreationTimestamp());
     }
 
-    public function testPatchHtmlGibtNullBeiLeeremInhalt(): void
+    public function testPatchHtmlReturnsNullOnEmptyContent(): void
     {
         self::assertNull($this->migration->patchHtml(null));
         self::assertNull($this->migration->patchHtml(''));
     }
 
-    public function testPatchHtmlGibtNullWennMarkerBereitsVorhanden(): void
+    public function testPatchHtmlReturnsNullWhenMarkerAlreadyPresent(): void
     {
         $content = "<div>... {# RcColorPicker:mail-color-block-v1 #} ...</div>";
 
         self::assertNull($this->migration->patchHtml($content));
     }
 
-    public function testPatchHtmlGibtNullWennAnchorFehlt(): void
+    public function testPatchHtmlReturnsNullWhenAnchorIsMissing(): void
     {
         $content = "<div>komplett angepasstes Template ohne Label-Anchor</div>";
 
         self::assertNull($this->migration->patchHtml($content));
     }
 
-    public function testPatchHtmlFuegtBlockNachLabelDivEin(): void
+    public function testPatchHtmlInsertsBlockAfterLabelDiv(): void
     {
         $content = $this->defaultHtmlFragment();
 
@@ -64,7 +64,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         self::assertGreaterThan($labelEnd, $markerPos);
     }
 
-    public function testPatchHtmlIdempotentNachZweitemLauf(): void
+    public function testPatchHtmlIsIdempotentOnSecondRun(): void
     {
         $content = $this->defaultHtmlFragment();
         $firstPass = $this->migration->patchHtml($content);
@@ -75,27 +75,27 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         self::assertNull($secondPass, 'Zweiter Lauf darf nicht erneut patchen.');
     }
 
-    public function testPatchPlainGibtNullBeiLeeremInhalt(): void
+    public function testPatchPlainReturnsNullOnEmptyContent(): void
     {
         self::assertNull($this->migration->patchPlain(null));
         self::assertNull($this->migration->patchPlain(''));
     }
 
-    public function testPatchPlainGibtNullWennMarkerBereitsVorhanden(): void
+    public function testPatchPlainReturnsNullWhenMarkerAlreadyPresent(): void
     {
         $content = "Beschreibung X\n{# RcColorPicker:mail-color-block-v1 #}\n...";
 
         self::assertNull($this->migration->patchPlain($content));
     }
 
-    public function testPatchPlainGibtNullWennAnchorFehlt(): void
+    public function testPatchPlainReturnsNullWhenAnchorIsMissing(): void
     {
         $content = "Komplett angepasstes Plaintext-Template ohne Label-Anchor\n";
 
         self::assertNull($this->migration->patchPlain($content));
     }
 
-    public function testPatchPlainFuegtBlockNachAnchorZeileEin(): void
+    public function testPatchPlainInsertsBlockAfterAnchorLine(): void
     {
         $content = $this->defaultPlainFragment();
 
@@ -114,7 +114,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         self::assertGreaterThan($anchorPos, $markerPos);
     }
 
-    public function testPatchPlainIdempotentNachZweitemLauf(): void
+    public function testPatchPlainIsIdempotentOnSecondRun(): void
     {
         $content = $this->defaultPlainFragment();
         $firstPass = $this->migration->patchPlain($content);
@@ -123,7 +123,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
         self::assertNull($this->migration->patchPlain($firstPass));
     }
 
-    public function testPatchHtmlNachfolgenderInhaltBleibtErhalten(): void
+    public function testPatchHtmlKeepsFollowingContent(): void
     {
         $content = $this->defaultHtmlFragment();
         $marker = '<!-- nachfolgender Marker -->';
@@ -140,7 +140,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
      * Ein angepasstes Template ohne Anchor wird übersprungen — das muss im Log
      * auftauchen, sonst merkt der Betreiber nie, dass die Farbe in der Mail fehlt.
      */
-    public function testUpdateProtokolliertUebersprungenesAngepasstesTemplate(): void
+    public function testUpdateLogsSkippedCustomizedTemplate(): void
     {
         $connection = $this->createMock(Connection::class);
         $connection->method('fetchAllAssociative')->willReturn([
@@ -178,7 +178,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
     /**
      * Der Normalfall darf nicht ins Log rauschen: Default-Template wird gepatcht, kein Skip.
      */
-    public function testUpdatePatchtDefaultTemplateOhneLogEintrag(): void
+    public function testUpdatePatchesDefaultTemplateWithoutLogEntry(): void
     {
         $connection = $this->createMock(Connection::class);
         $connection->method('fetchAllAssociative')->willReturn([
@@ -215,7 +215,7 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlockTest extends
     /**
      * Zweitlauf auf bereits gepatchten Templates: idempotent und ebenfalls ohne Log-Rauschen.
      */
-    public function testUpdateZweitlaufBleibtStumm(): void
+    public function testUpdateSecondRunStaysSilent(): void
     {
         $patchedHtml = $this->migration->patchHtml($this->defaultHtmlFragment());
         $patchedPlain = $this->migration->patchPlain($this->defaultPlainFragment());

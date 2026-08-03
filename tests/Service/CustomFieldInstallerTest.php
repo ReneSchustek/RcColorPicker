@@ -16,7 +16,7 @@ use Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetEnti
 #[CoversClass(CustomFieldInstaller::class)]
 final class CustomFieldInstallerTest extends TestCase
 {
-    public function testInstallLegtSetMitNeuemNamenAnWennNichtVorhanden(): void
+    public function testInstallCreatesSetWithNewNameWhenMissing(): void
     {
         $repository = $this->createMock(EntityRepository::class);
         $repository->method('search')->willReturn($this->emptySearchResult());
@@ -46,7 +46,7 @@ final class CustomFieldInstallerTest extends TestCase
         $installer->install(Context::createDefaultContext());
     }
 
-    public function testInstallUebergibtBestehendeIdAnUpsertWennSetExistiert(): void
+    public function testInstallPassesExistingIdToUpsertWhenSetExists(): void
     {
         $set = new CustomFieldSetEntity();
         $set->setId('existing-set-id');
@@ -71,7 +71,7 @@ final class CustomFieldInstallerTest extends TestCase
         $installer->install(Context::createDefaultContext());
     }
 
-    public function testUninstallLoeschtVorhandenesSet(): void
+    public function testUninstallDeletesExistingSet(): void
     {
         $set = new CustomFieldSetEntity();
         $set->setId('set-id-123');
@@ -90,7 +90,7 @@ final class CustomFieldInstallerTest extends TestCase
         $installer->uninstall(Context::createDefaultContext());
     }
 
-    public function testUninstallBeiFehlenderSetMachtNichts(): void
+    public function testUninstallDoesNothingWhenSetIsMissing(): void
     {
         $repository = $this->createMock(EntityRepository::class);
         $repository->method('search')->willReturn($this->emptySearchResult());

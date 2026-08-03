@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 #[CoversClass(PayloadSanitizerSubscriber::class)]
 final class PayloadSanitizerIntegrationTest extends IntegrationTestBase
 {
-    public function testSubscriberIstAmKernelRequestEventRegistriert(): void
+    public function testSubscriberIsRegisteredOnTheKernelRequestEvent(): void
     {
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = static::getContainer()->get('event_dispatcher');
@@ -32,7 +32,7 @@ final class PayloadSanitizerIntegrationTest extends IntegrationTestBase
         self::assertTrue($found, 'PayloadSanitizerSubscriber muss am KernelEvents::REQUEST registriert sein.');
     }
 
-    public function testSanitizerEntferntScriptTagsAufStoreApiRoute(): void
+    public function testSanitizerStripsScriptTagsOnStoreApiRoute(): void
     {
         /** @var PayloadSanitizerSubscriber $subscriber */
         $subscriber = static::getContainer()->get(PayloadSanitizerSubscriber::class);

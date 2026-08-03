@@ -13,12 +13,12 @@ use Shopware\Core\Framework\Uuid\Uuid;
 #[CoversClass(Migration1777248000RenameCustomFields::class)]
 final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBase
 {
-    public function testGetCreationTimestampIstStabil(): void
+    public function testGetCreationTimestampIsStable(): void
     {
         self::assertSame(1777248000, (new Migration1777248000RenameCustomFields())->getCreationTimestamp());
     }
 
-    public function testUpdateGreiftAufDieRichtigenSpaltenZu(): void
+    public function testUpdateAccessesTheCorrectColumns(): void
     {
         // Smoketest gegen die echten Tabellen — fungiert als Schutz davor, dass
         // ein refactor versehentlich `product` statt `product_translation`
@@ -30,7 +30,7 @@ final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBas
         (new Migration1777248000RenameCustomFields())->update($this->connection());
     }
 
-    public function testBenenntCustomFieldSetUndCustomFieldUm(): void
+    public function testRenamesCustomFieldSetAndCustomField(): void
     {
         $connection = $this->connection();
 
@@ -60,7 +60,7 @@ final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBas
         self::assertSame('ruhrcoder_color_picker_enabled', $fieldName);
     }
 
-    public function testIstIdempotentBeiZweitemLauf(): void
+    public function testIsIdempotentOnSecondRun(): void
     {
         $connection = $this->connection();
 
@@ -88,7 +88,7 @@ final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBas
         self::assertSame('ruhrcoder_color_picker_enabled', $fieldName);
     }
 
-    public function testVerschiebtJsonKeyInCustomFieldsSpalte(): void
+    public function testMovesJsonKeyIntoCustomFieldsColumn(): void
     {
         $connection = $this->connection();
 
@@ -140,7 +140,7 @@ final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBas
      * stillschweigend zwei gleichnamige Sets entstanden. Erwartet wird jetzt: kein Abbruch,
      * und keine der beiden Seiten wird angefasst.
      */
-    public function testUeberspringtUmbenennungWennZielnameBelegtIst(): void
+    public function testSkipsRenameWhenTargetNameIsTaken(): void
     {
         $connection = $this->connection();
 

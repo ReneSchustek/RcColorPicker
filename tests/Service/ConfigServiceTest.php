@@ -13,7 +13,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 #[CoversClass(ConfigService::class)]
 final class ConfigServiceTest extends TestCase
 {
-    public function testGetStandardColorsParsesDreiFelder(): void
+    public function testGetStandardColorsParsesThreeFields(): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => "RAL 9010;Reinweiß;#FFFFFF\nRAL 7016;Anthrazitgrau;#293133",
@@ -28,7 +28,7 @@ final class ConfigServiceTest extends TestCase
         self::assertSame('RAL 7016', $colors[1]['ral']);
     }
 
-    public function testGetStandardColorsLeererString(): void
+    public function testGetStandardColorsEmptyString(): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => '',
@@ -46,7 +46,7 @@ final class ConfigServiceTest extends TestCase
         self::assertSame([], $service->getStandardColors());
     }
 
-    public function testGetStandardColorsIgnoriertUnvollstaendigeZeilen(): void
+    public function testGetStandardColorsIgnoresIncompleteLines(): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => "RAL 9010;Reinweiß\nRAL 7016;Anthrazitgrau;#293133\nNurEinWert",
@@ -58,7 +58,7 @@ final class ConfigServiceTest extends TestCase
         self::assertSame('RAL 7016', $colors[0]['ral']);
     }
 
-    public function testGetStandardColorsIgnoriertLeerzeilen(): void
+    public function testGetStandardColorsIgnoresEmptyLines(): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => "RAL 9010;Reinweiß;#FFFFFF\n\n\nRAL 7016;Anthrazitgrau;#293133",
@@ -67,7 +67,7 @@ final class ConfigServiceTest extends TestCase
         self::assertCount(2, $service->getStandardColors());
     }
 
-    public function testGetStandardColorsTrimtWerte(): void
+    public function testGetStandardColorsTrimsValues(): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => " RAL 9010 ; Reinweiß ; #FFFFFF ",
@@ -83,19 +83,19 @@ final class ConfigServiceTest extends TestCase
     /**
      * @return iterable<string, array{0:string}>
      */
-    public static function ungueltigeHexCodes(): iterable
+    public static function invalidHexCodes(): iterable
     {
         yield 'kein-rautezeichen' => ['FFFFFF'];
         yield 'zu-kurz' => ['#FF'];
         yield 'sieben-zeichen' => ['#FFFFFF1'];
         yield 'unzulässige-zeichen' => ['#GGHHII'];
-        yield 'leer' => [''];
+        yield 'empty' => [''];
         yield 'wort' => ['notahex'];
         yield 'rgb-notation' => ['rgb(255,255,255)'];
     }
 
-    #[DataProvider('ungueltigeHexCodes')]
-    public function testGetStandardColorsLehnEntUngueltigeHexAb(string $hex): void
+    #[DataProvider('invalidHexCodes')]
+    public function testGetStandardColorsRejectsInvalidHex(string $hex): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => sprintf("RAL 9010;Reinweiß;%s\nRAL 7016;Anthrazitgrau;#293133", $hex),
@@ -110,7 +110,7 @@ final class ConfigServiceTest extends TestCase
     /**
      * @return iterable<string, array{0:string}>
      */
-    public static function gueltigeHexCodes(): iterable
+    public static function validHexCodes(): iterable
     {
         yield 'kurz-lowercase' => ['#fff'];
         yield 'kurz-uppercase' => ['#FFF'];
@@ -121,8 +121,8 @@ final class ConfigServiceTest extends TestCase
         yield 'numerisch' => ['#123456'];
     }
 
-    #[DataProvider('gueltigeHexCodes')]
-    public function testGetStandardColorsAkzeptiertGueltigeHex(string $hex): void
+    #[DataProvider('validHexCodes')]
+    public function testGetStandardColorsAcceptsValidHex(string $hex): void
     {
         $service = $this->createService([
             'RcColorPicker.config.standardColors' => sprintf('RAL 9010;Reinweiß;%s', $hex),
@@ -204,7 +204,7 @@ final class ConfigServiceTest extends TestCase
      * Kein Eigen-Cache: Jede Abfrage geht an den Core durch,
      * damit dessen Invalidierung bei Konfigurationsänderung auch wirklich greift.
      */
-    public function testJedeAbfrageGehtAnDenCoreDurch(): void
+    public function testEveryQueryGoesThroughToTheCore(): void
     {
         $systemConfig = $this->createMock(SystemConfigService::class);
         $systemConfig->expects(self::exactly(2))
@@ -218,7 +218,7 @@ final class ConfigServiceTest extends TestCase
         $service->isCustomRalAllowed();
     }
 
-    public function testSalesChannelIdWirdWeitergegeben(): void
+    public function testSalesChannelIdIsPassedThrough(): void
     {
         $channelId = 'abc123';
 

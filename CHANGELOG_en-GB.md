@@ -1,5 +1,25 @@
 # Changelog (EN)
 
+## [2.6.0] - 2026-08-03 — The ordered colour is the one shown, and no order goes through without one
+
+> **Deployment:** `php bin/console plugin:update RcColorPicker && php bin/console cache:clear`. A new migration lifts the colour block in the order confirmation to v2 and protects the template from being overwritten by Shopware.
+
+### Fixed
+
+- **The mandatory colour was not enforced.** The check lived in the browser alone — and did not even work there: Shopware's “add to cart” is attached to the same form and registered first, so the item was already in the cart before the check ran. The error message appeared behind the opening cart panel. A **cart validator on the server** now blocks the order for any item without a colour, naming the item in the message. The item stays in the cart — silently removing it would be the worse behaviour. This also covers integrations that never touch the browser.
+- **After switching modes, a different colour was ordered than the one shown.** Choosing a standard colour, switching to “custom RAL”, typing a code there and switching back to “standard colour” left an empty form — but the typed RAL code was what got ordered. The mode switch now clears symmetrically in both directions: what is not visibly selected is not ordered.
+- **The colour selection was missing from the buy widget on CMS pages.** After a variant switch, Shopware replaced the markup — without the colour selection, without the requirement check, without a message. The customer ordered without a colour and noticed nothing. Cause: the configuration was attached to the page, but the buy widget renders its own product instance and is rebuilt without a page during a variant switch.
+- **The colour block would have vanished from the order confirmation on a Shopware update.** The template was not marked as “customised by this shop”; Shopware would have replaced it on its next own update. Without a message, without an error. A hand-edited template is detected and left alone.
+- **Input validation did not apply to the Store API.** Storefront and Store API name the line items differently; only the storefront name was checked. A colour value from a headless integration therefore reached the cart and the order unchecked.
+- **The validation at checkout protected nothing visible.** It only touched the custom fields, while cart and order confirmation read the line item payload. Both are now sanitised.
+- **A standard colour without a RAL code was missing from the order confirmation** even though it appeared in the cart.
+
+### Other
+
+- Removed a subscription to an event that does not exist in Shopware 6.7 — it had no effect and masked the CMS defect above.
+- `destroy()` called a base class method that does not exist; the call would have aborted before the timer was cleared.
+- Test method and variable names moved to English throughout (48 methods); comments stay German.
+
 ## [2.5.2] - 2026-07-30 — Updates no longer abort when legacy field names are present
 
 > **Deployment:** `php bin/console plugin:update RcColorPicker && php bin/console cache:clear`.

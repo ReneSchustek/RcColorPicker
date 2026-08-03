@@ -19,7 +19,7 @@ final class CustomFieldInstallerIntegrationTest extends IntegrationTestBase
 {
     private const SET_NAME = 'ruhrcoder_color_picker';
 
-    public function testInstallLegtCustomFieldSetMitFeldUndProductRelationAn(): void
+    public function testInstallCreatesCustomFieldSetWithFieldAndProductRelation(): void
     {
         /** @var EntityRepository<CustomFieldSetCollection> $customFieldSetRepository */
         $customFieldSetRepository = static::getContainer()->get('custom_field_set.repository');
@@ -56,7 +56,7 @@ final class CustomFieldInstallerIntegrationTest extends IntegrationTestBase
         self::assertContains('product', $relationEntities);
     }
 
-    public function testInstallIstIdempotentBeimZweitenAufruf(): void
+    public function testInstallIsIdempotentOnSecondCall(): void
     {
         /** @var EntityRepository<CustomFieldSetCollection> $customFieldSetRepository */
         $customFieldSetRepository = static::getContainer()->get('custom_field_set.repository');
@@ -86,7 +86,7 @@ final class CustomFieldInstallerIntegrationTest extends IntegrationTestBase
         self::assertCount(1, $enabledFields, 'Zweiter install darf kein zweites Feld anlegen');
     }
 
-    public function testUninstallLoeschtBestehendesCustomFieldSet(): void
+    public function testUninstallDeletesExistingCustomFieldSet(): void
     {
         /** @var EntityRepository<CustomFieldSetCollection> $customFieldSetRepository */
         $customFieldSetRepository = static::getContainer()->get('custom_field_set.repository');

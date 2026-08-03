@@ -74,19 +74,31 @@ final class OrderColorSubscriber implements EventSubscriberInterface
         $updates = [];
 
         foreach ($lineItems as $lineItem) {
-            $corrected = $this->buildCustomFields($lineItem);
-
-            if ($corrected === null) {
+            if (!$this->hasColorSelection($lineItem)) {
                 continue;
             }
 
-            $updates[] = [
-                'id' => $lineItem->getId(),
-                'customFields' => $corrected,
-            ];
+            $correctedCustomFields = $this->buildCustomFields($lineItem);
+            $correctedPayload = $this->buildPayload($lineItem);
 
-            // Entity im Speicher korrigieren für nachfolgende Subscriber/Templates
-            $lineItem->setCustomFields($corrected);
+            if ($correctedCustomFields === null && $correctedPayload === null) {
+                continue;
+            }
+
+            $update = ['id' => $lineItem->getId()];
+
+            if ($correctedCustomFields !== null) {
+                $update['customFields'] = $correctedCustomFields;
+                // Entity im Speicher korrigieren für nachfolgende Subscriber/Templates
+                $lineItem->setCustomFields($correctedCustomFields);
+            }
+
+            if ($correctedPayload !== null) {
+                $update['payload'] = $correctedPayload;
+                $lineItem->setPayload($correctedPayload);
+            }
+
+            $updates[] = $update;
         }
 
         if ($updates === []) {
@@ -118,12 +130,6 @@ final class OrderColorSubscriber implements EventSubscriberInterface
     private function buildCustomFields(OrderLineItemEntity $lineItem): ?array
     {
         $payload = $lineItem->getPayload();
-
-        // Headless-/Store-API-Clients senden den Aktiv-Flag evtl. als int/bool statt String '1'.
-        if (!\in_array($payload[self::PAYLOAD_ACTIVE] ?? null, ['1', 1, true], true)) {
-            return null;
-        }
-
         $customFields = $lineItem->getCustomFields() ?? [];
 
         // Serverseitige Validierung an der Persistenz-Kante: nur valider Hex und
@@ -141,5 +147,41 @@ final class OrderColorSubscriber implements EventSubscriberInterface
         }
 
         return $corrected;
+    }
+
+    /**
+     * Trägt die geprüften Werte auch in die **Nutzlast** ein.
+     *
+     * Bis zum 2026-08-03 fasste dieser Abonnent nur die CustomFields an — und das war wirkungslos
+     * für alles Sichtbare: Warenkorb-Template und Bestellbestätigung lesen die Nutzlast, der
+     * Rückfall auf die CustomFields greift bei aktiver Farbauswahl nie. Die „Validierung an der
+     * Persistenz-Kante“ prüfte damit genau die Kopie, die niemand anzeigt.
+     *
+     * @return array<string, mixed>|null null, wenn nichts zu ändern war
+     */
+    private function buildPayload(OrderLineItemEntity $lineItem): ?array
+    {
+        $payload = $lineItem->getPayload() ?? [];
+
+        $corrected = $payload;
+        $corrected[self::PAYLOAD_RAL] = ColorValidator::sanitizeText((string) ($payload[self::PAYLOAD_RAL] ?? ''));
+        $corrected[self::PAYLOAD_NAME] = ColorValidator::sanitizeText((string) ($payload[self::PAYLOAD_NAME] ?? ''));
+        $corrected[self::PAYLOAD_HEX] = ColorValidator::sanitizeHex((string) ($payload[self::PAYLOAD_HEX] ?? ''));
+
+        // Wie bei den CustomFields: Ein Neuladen der Bestellbestätigung darf keinen Schreibvorgang
+        // auslösen, wenn sich nichts ändert.
+        if ($corrected === $payload) {
+            return null;
+        }
+
+        return $corrected;
+    }
+
+    /** Headless-/Store-API-Clients senden die Kennzeichnung auch als int oder bool. */
+    private function hasColorSelection(OrderLineItemEntity $lineItem): bool
+    {
+        $payload = $lineItem->getPayload();
+
+        return \in_array($payload[self::PAYLOAD_ACTIVE] ?? null, ['1', 1, true], true);
     }
 }

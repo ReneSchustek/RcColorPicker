@@ -77,6 +77,9 @@ final class Migration1779600000UpdateOrderConfirmationMailColorBlock extends Mig
                 continue;
             }
 
+            // `updated_at` setzt bewusst erst Migration1785715200 — für Neu- und Bestandsinstalla-
+            // tionen an einer Stelle. Diese Migration hier ist auf jedem bestehenden Shop längst
+            // gelaufen; was sie versäumt hat, lässt sich nur nachträglich einholen.
             $connection->update(
                 'mail_template_translation',
                 $update,

@@ -30,7 +30,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('sanitizePayload', $events[KernelEvents::REQUEST]);
     }
 
-    public function testEntferntHtmlTags(): void
+    public function testStripsHtmlTags(): void
     {
         $event = $this->createCheckoutEvent([
             'item1' => [
@@ -49,7 +49,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('Anthrazitgrau', $lineItems['item1']['payload']['rcColorPickerName']);
     }
 
-    public function testBelaesstSonderzeichenUngeescaped(): void
+    public function testLeavesSpecialCharactersUnescaped(): void
     {
         $event = $this->createCheckoutEvent([
             'item1' => [
@@ -68,7 +68,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame("Name's", $lineItems['item1']['payload']['rcColorPickerName']);
     }
 
-    public function testTrimtWhitespace(): void
+    public function testTrimsWhitespace(): void
     {
         $event = $this->createCheckoutEvent([
             'item1' => [
@@ -86,7 +86,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('RAL 7016', $lineItems['item1']['payload']['rcColorPickerRal']);
     }
 
-    public function testIgnoriertLeereLineItems(): void
+    public function testIgnoresEmptyLineItems(): void
     {
         $event = $this->createCheckoutEvent([]);
 
@@ -95,7 +95,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame([], $event->getRequest()->request->all('lineItems'));
     }
 
-    public function testIgnoriertItemsOhnePayload(): void
+    public function testIgnoresItemsWithoutPayload(): void
     {
         $event = $this->createCheckoutEvent([
             'item1' => ['quantity' => 1],
@@ -107,7 +107,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertArrayNotHasKey('payload', $lineItems['item1']);
     }
 
-    public function testIgnoriertSubRequests(): void
+    public function testIgnoresSubRequests(): void
     {
         $request = new Request([], ['lineItems' => [
             'item1' => [
@@ -128,7 +128,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('<script>xss</script>', $lineItems['item1']['payload']['rcColorPickerRal']);
     }
 
-    public function testGreiftAufStoreApiRoutenZu(): void
+    public function testAppliesToStoreApiRoutesToo(): void
     {
         $request = new Request([], ['lineItems' => [
             'item1' => [
@@ -154,7 +154,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('Anthrazitgrau', $lineItems['item1']['payload']['rcColorPickerName']);
     }
 
-    public function testIgnoriertNichtCheckoutRouten(): void
+    public function testIgnoresNonCheckoutRoutes(): void
     {
         $request = new Request([], ['lineItems' => [
             'item1' => [
@@ -175,7 +175,7 @@ final class PayloadSanitizerSubscriberTest extends TestCase
         self::assertSame('<script>xss</script>', $lineItems['item1']['payload']['rcColorPickerRal']);
     }
 
-    public function testIgnoriertNichtStringWerte(): void
+    public function testIgnoresNonStringValues(): void
     {
         $event = $this->createCheckoutEvent([
             'item1' => [
@@ -206,5 +206,82 @@ final class PayloadSanitizerSubscriberTest extends TestCase
             $request,
             HttpKernelInterface::MAIN_REQUEST,
         );
+    }
+
+    /**
+     * Was: Ein Store-API-Aufruf mit dem Parameter `items`.
+     * Warum: **Das war die Lücke.** Die Storefront schickt `lineItems`, die Store-API `items`
+     *        (`CartItemAddRoute.php:57`). Der Abonnent las nur `lineItems` — und der
+     *        Klassenkommentar behauptete trotzdem, Headless- und PWA-Clients seien abgedeckt.
+     *        Ein Hex-Wert wie `red;background-image:url(…)` landete damit ungeprüft in
+     *        `order_line_item.payload` und von dort in ein `style`-Attribut.
+     * Erwartet: Der Wert ist verworfen.
+     */
+    public function testStoreApiItemsAreSanitizedAsWell(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'store-api.checkout.cart.line-item.add');
+        $request->request->set('items', [
+            ['payload' => ['rcColorPickerHex' => 'red;background-image:url(https://example.invalid/x)']],
+        ]);
+
+        $this->subscriber->sanitizePayload(new RequestEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST,
+        ));
+
+        $items = $request->request->all('items');
+        self::assertSame('', $items[0]['payload']['rcColorPickerHex']);
+    }
+
+    /**
+     * Was: Markup im Freitext eines Store-API-Aufrufs.
+     * Warum: Derselbe Weg, anderes Feld — der RAL-Text steht im Warenkorb und in der Mail.
+     * Erwartet: Das Markup ist entfernt.
+     */
+    public function testStoreApiTextFieldsAreStrippedAsWell(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'store-api.checkout.cart.line-item.update');
+        $request->request->set('items', [
+            ['payload' => ['rcColorPickerName' => '<script>alert(1)</script>Reinweiß']],
+        ]);
+
+        $this->subscriber->sanitizePayload(new RequestEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST,
+        ));
+
+        $items = $request->request->all('items');
+        self::assertSame('alert(1)Reinweiß', $items[0]['payload']['rcColorPickerName']);
+    }
+
+    /**
+     * Was: Beide Parameter in einem Aufruf.
+     * Warum: Die Umstellung darf den bisherigen Weg nicht verlieren. Ein Test nur auf `items`
+     *        hätte einen Fehler in `lineItems` nicht bemerkt.
+     * Erwartet: beide bereinigt.
+     */
+    public function testBothParameterNamesAreHandled(): void
+    {
+        $request = new Request();
+        $request->attributes->set('_route', 'frontend.checkout.line-item.add');
+        $request->request->set('lineItems', [
+            'p1' => ['payload' => ['rcColorPickerHex' => 'javascript:x']],
+        ]);
+        $request->request->set('items', [
+            ['payload' => ['rcColorPickerHex' => 'javascript:x']],
+        ]);
+
+        $this->subscriber->sanitizePayload(new RequestEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST,
+        ));
+
+        self::assertSame('', $request->request->all('lineItems')['p1']['payload']['rcColorPickerHex']);
+        self::assertSame('', $request->request->all('items')[0]['payload']['rcColorPickerHex']);
     }
 }

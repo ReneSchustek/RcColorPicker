@@ -231,7 +231,10 @@ describe('_onSubmit — Meldung statt stummer Sperre', () => {
             preventDefault: () => {
                 prevented += 1;
             },
-            stopImmediatePropagation: () => {
+            // `stopPropagation`, nicht `stopImmediatePropagation`: Der Zuhoerer sitzt in der
+            // Einfangphase am `document` und muss verhindern, dass das Ereignis das Formular
+            // überhaupt erreicht — dort hängt Shopwares AddToCart.
+            stopPropagation: () => {
                 stopped += 1;
             },
         });
@@ -252,7 +255,7 @@ describe('_onSubmit — Meldung statt stummer Sperre', () => {
             preventDefault: () => {
                 prevented += 1;
             },
-            stopImmediatePropagation: () => {},
+            stopPropagation: () => {},
         });
 
         assert.strictEqual(prevented, 0, 'ein gültiges Formular darf nicht blockiert werden');

@@ -15,14 +15,14 @@ use Ruhrcoder\RcColorPicker\Exception\RcColorPickerException;
 #[CoversClass(RcColorPickerException::class)]
 final class RcColorPickerExceptionTest extends TestCase
 {
-    public function testCodeConstantsBleibenStabil(): void
+    public function testCodeConstantsRemainStable(): void
     {
         self::assertSame(1001, RcColorPickerException::CODE_CONTAINER_NOT_AVAILABLE);
         self::assertSame(1002, RcColorPickerException::CODE_CUSTOM_FIELD_SET_REPOSITORY_MISSING);
         self::assertSame(1003, RcColorPickerException::CODE_ORDER_LINE_ITEM_UPDATE_FAILED);
     }
 
-    public function testContainerNotAvailableExceptionTraegtCode(): void
+    public function testContainerNotAvailableExceptionCarriesCode(): void
     {
         $exception = RcColorPickerException::containerNotAvailable();
 
@@ -30,7 +30,7 @@ final class RcColorPickerExceptionTest extends TestCase
         self::assertNotSame('', $exception->getMessage());
     }
 
-    public function testCustomFieldSetRepositoryMissingExceptionTraegtCode(): void
+    public function testCustomFieldSetRepositoryMissingExceptionCarriesCode(): void
     {
         $exception = RcColorPickerException::customFieldSetRepositoryMissing();
 
@@ -47,7 +47,7 @@ final class RcColorPickerExceptionTest extends TestCase
         self::assertStringContainsString('order-abc-123', $exception->getMessage());
     }
 
-    public function testCodesSindEindeutig(): void
+    public function testCodesAreUnique(): void
     {
         $codes = [
             RcColorPickerException::CODE_CONTAINER_NOT_AVAILABLE,

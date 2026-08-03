@@ -36,7 +36,7 @@ final class OrderColorSubscriberTest extends TestCase
         self::assertSame(['onOrderPlaced', -500], $events[CheckoutOrderPlacedEvent::class]);
     }
 
-    public function testUebertraegtPayloadInCustomFields(): void
+    public function testTransfersPayloadIntoCustomFields(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -78,7 +78,7 @@ final class OrderColorSubscriberTest extends TestCase
         self::assertSame('RAL 7016', ($cf['ruhrcoder_color_picker_ral'] ?? null));
     }
 
-    public function testVerwirftUngueltigenHexGegenCssInjection(): void
+    public function testRejectsInvalidHexAgainstCssInjection(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -108,7 +108,7 @@ final class OrderColorSubscriberTest extends TestCase
         $subscriber->onOrderPlaced($this->createPlacedEvent($order));
     }
 
-    public function testIgnoriertInaktiveItems(): void
+    public function testIgnoresInactiveItems(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -131,7 +131,7 @@ final class OrderColorSubscriberTest extends TestCase
         $subscriber->onOrderPlaced($event);
     }
 
-    public function testIgnoriertItemsOhneAktivFlag(): void
+    public function testIgnoresItemsWithoutActiveFlag(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -151,7 +151,7 @@ final class OrderColorSubscriberTest extends TestCase
         $subscriber->onOrderPlaced($event);
     }
 
-    public function testErhaeltBestehendeCustonFields(): void
+    public function testPreservesExistingCustomFields(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -192,7 +192,7 @@ final class OrderColorSubscriberTest extends TestCase
      * `CheckoutFinishPageLoadedEvent` feuert bei jedem Reload der Bestellbestätigung.
      * Stehen die Farbwerte bereits korrekt in den CustomFields, darf kein Write mehr rausgehen.
      */
-    public function testSchreibtNichtErneutWennCustomFieldsBereitsStimmen(): void
+    public function testDoesNotWriteAgainWhenCustomFieldsAlreadyMatch(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -223,7 +223,7 @@ final class OrderColorSubscriberTest extends TestCase
     /**
      * Gegenprobe zum Guard: Weicht auch nur ein Wert ab, wird weiterhin nachgetragen.
      */
-    public function testSchreibtWennEinCustomFieldAbweicht(): void
+    public function testWritesWhenACustomFieldDiffers(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -262,20 +262,20 @@ final class OrderColorSubscriberTest extends TestCase
      * Derselbe Artikel in zwei Farben ist zwei Positionen. Jede Position trägt ihre eigene
      * Farbe — die erste darf von der zweiten nicht überschrieben werden.
      */
-    public function testZweiFarbenBleibenZweiEigenstaendigePositionen(): void
+    public function testTwoColorsRemainTwoIndependentPositions(): void
     {
-        $rot = new OrderLineItemEntity();
-        $rot->setId('item-rot');
-        $rot->setPayload([
+        $red = new OrderLineItemEntity();
+        $red->setId('item-red');
+        $red->setPayload([
             'rcColorPickerActive' => '1',
             'rcColorPickerRal' => 'RAL 3020',
             'rcColorPickerName' => 'Verkehrsrot',
             'rcColorPickerHex' => '#CC0605',
         ]);
 
-        $blau = new OrderLineItemEntity();
-        $blau->setId('item-blau');
-        $blau->setPayload([
+        $blue = new OrderLineItemEntity();
+        $blue->setId('item-blue');
+        $blue->setPayload([
             'rcColorPickerActive' => '1',
             'rcColorPickerRal' => 'RAL 5010',
             'rcColorPickerName' => 'Enzianblau',
@@ -289,10 +289,10 @@ final class OrderColorSubscriberTest extends TestCase
                 self::assertCount(2, $updates, 'Beide Positionen müssen geschrieben werden.');
 
                 $byId = array_column($updates, 'customFields', 'id');
-                self::assertSame('RAL 3020', $byId['item-rot']['ruhrcoder_color_picker_ral']);
-                self::assertSame('#CC0605', $byId['item-rot']['ruhrcoder_color_picker_hex']);
-                self::assertSame('RAL 5010', $byId['item-blau']['ruhrcoder_color_picker_ral']);
-                self::assertSame('#0E294B', $byId['item-blau']['ruhrcoder_color_picker_hex']);
+                self::assertSame('RAL 3020', $byId['item-red']['ruhrcoder_color_picker_ral']);
+                self::assertSame('#CC0605', $byId['item-red']['ruhrcoder_color_picker_hex']);
+                self::assertSame('RAL 5010', $byId['item-blue']['ruhrcoder_color_picker_ral']);
+                self::assertSame('#0E294B', $byId['item-blue']['ruhrcoder_color_picker_hex']);
 
                 return true;
             }), self::isInstanceOf(Context::class));
@@ -301,38 +301,38 @@ final class OrderColorSubscriberTest extends TestCase
 
         $order = new OrderEntity();
         $order->setId('order-1');
-        $order->setLineItems(new OrderLineItemCollection([$rot, $blau]));
+        $order->setLineItems(new OrderLineItemCollection([$red, $blue]));
 
         $subscriber->onOrderPlaced($this->createPlacedEvent($order));
 
         // Auch im Speicher behält jede Position ihre eigene Farbe.
-        self::assertSame('RAL 3020', $rot->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
-        self::assertSame('RAL 5010', $blau->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
+        self::assertSame('RAL 3020', $red->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
+        self::assertSame('RAL 5010', $blue->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
     }
 
     /**
      * Guard und Mehrfarbigkeit zusammen: Steht eine der beiden Positionen bereits korrekt,
      * wird nur die andere nachgetragen — die fertige Position wird nicht angefasst.
      */
-    public function testGuardUeberspringtNurDieBereitsKorrektePosition(): void
+    public function testGuardSkipsOnlyTheAlreadyCorrectPosition(): void
     {
-        $rot = new OrderLineItemEntity();
-        $rot->setId('item-rot');
-        $rot->setPayload([
+        $red = new OrderLineItemEntity();
+        $red->setId('item-red');
+        $red->setPayload([
             'rcColorPickerActive' => '1',
             'rcColorPickerRal' => 'RAL 3020',
             'rcColorPickerName' => 'Verkehrsrot',
             'rcColorPickerHex' => '#CC0605',
         ]);
-        $rot->setCustomFields([
+        $red->setCustomFields([
             'ruhrcoder_color_picker_ral' => 'RAL 3020',
             'ruhrcoder_color_picker_name' => 'Verkehrsrot',
             'ruhrcoder_color_picker_hex' => '#CC0605',
         ]);
 
-        $blau = new OrderLineItemEntity();
-        $blau->setId('item-blau');
-        $blau->setPayload([
+        $blue = new OrderLineItemEntity();
+        $blue->setId('item-blue');
+        $blue->setPayload([
             'rcColorPickerActive' => '1',
             'rcColorPickerRal' => 'RAL 5010',
             'rcColorPickerName' => 'Enzianblau',
@@ -344,7 +344,7 @@ final class OrderColorSubscriberTest extends TestCase
             ->method('update')
             ->with(self::callback(function (array $updates): bool {
                 self::assertCount(1, $updates, 'Nur die noch fehlende Position wird geschrieben.');
-                self::assertSame('item-blau', $updates[0]['id']);
+                self::assertSame('item-blue', $updates[0]['id']);
 
                 return true;
             }), self::isInstanceOf(Context::class));
@@ -353,15 +353,15 @@ final class OrderColorSubscriberTest extends TestCase
 
         $order = new OrderEntity();
         $order->setId('order-1');
-        $order->setLineItems(new OrderLineItemCollection([$rot, $blau]));
+        $order->setLineItems(new OrderLineItemCollection([$red, $blue]));
 
         $subscriber->onOrderPlaced($this->createPlacedEvent($order));
 
         // Rot bleibt unverändert erhalten.
-        self::assertSame('RAL 3020', $rot->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
+        self::assertSame('RAL 3020', $red->getCustomFields()['ruhrcoder_color_picker_ral'] ?? null);
     }
 
-    public function testIgnoriertNullLineItems(): void
+    public function testIgnoresNullLineItems(): void
     {
         $repository = $this->createMock(EntityRepository::class);
         $repository->expects(self::never())->method('update');
@@ -376,7 +376,7 @@ final class OrderColorSubscriberTest extends TestCase
         $subscriber->onOrderPlaced($event);
     }
 
-    public function testLoggtStrukturiertBeiRepositoryFehlerOhneZuWerfen(): void
+    public function testLogsStructuredOnRepositoryErrorWithoutThrowing(): void
     {
         $lineItem = new OrderLineItemEntity();
         $lineItem->setId('item-1');
@@ -419,5 +419,82 @@ final class OrderColorSubscriberTest extends TestCase
         // Geschluckt, nicht geworfen: der bereits abgeschlossene Bestellprozess darf
         // wegen reiner Anzeige-Daten kein 500 bekommen. Das Log oben ist die Erwartung.
         $subscriber->onOrderPlaced($event);
+    }
+
+    /**
+     * Was: Ein unsauberer Hex-Wert in der Nutzlast der Bestellung.
+     * Warum: **Die Bereinigung fasste bis zum 2026-08-03 nur die CustomFields an — und das war
+     *        wirkungslos für alles Sichtbare.** Warenkorb-Template und Bestellbestätigung lesen
+     *        die Nutzlast; der Rückfall auf die CustomFields greift bei aktiver Farbauswahl nie.
+     *        Die „Validierung an der Persistenz-Kante" prüfte genau die Kopie, die niemand
+     *        anzeigt.
+     * Erwartet: Der Wert ist auch in der Nutzlast verworfen.
+     */
+    public function testThePayloadIsSanitizedNotOnlyTheCustomFields(): void
+    {
+        $lineItem = new OrderLineItemEntity();
+        $lineItem->setId('li-1');
+        $lineItem->setPayload([
+            'rcColorPickerActive' => '1',
+            'rcColorPickerRal' => '<b>RAL 7016</b>',
+            'rcColorPickerName' => 'Anthrazit',
+            'rcColorPickerHex' => 'red;background-image:url(https://example.invalid/x)',
+        ]);
+
+        $order = new OrderEntity();
+        $order->setId('order-1');
+        $order->setLineItems(new OrderLineItemCollection([$lineItem]));
+
+        $repository = $this->createMock(EntityRepository::class);
+        $written = [];
+        $repository->method('update')->willReturnCallback(
+            static function (array $data) use (&$written): void {
+                $written = $data;
+            },
+        );
+
+        $subscriber = new OrderColorSubscriber($repository, new NullLogger());
+        $subscriber->onOrderPlaced($this->createPlacedEvent($order));
+
+        $payload = $lineItem->getPayload() ?? [];
+        self::assertSame('', $payload['rcColorPickerHex']);
+        self::assertSame('RAL 7016', $payload['rcColorPickerRal']);
+
+        self::assertArrayHasKey('payload', $written[0]);
+        self::assertSame('', $written[0]['payload']['rcColorPickerHex']);
+    }
+
+    /**
+     * Was: Eine Bestellung, deren Werte bereits sauber sind.
+     * Warum: `CheckoutFinishPageLoadedEvent` feuert bei jedem Neuladen der Bestellbestätigung.
+     *        Würde dann jedes Mal geschrieben, erzeugte ein F5 auf der Danke-Seite Datenbanklast
+     *        ohne Wirkung.
+     * Erwartet: kein Schreibvorgang.
+     */
+    public function testNothingIsWrittenWhenEverythingIsAlreadyClean(): void
+    {
+        $lineItem = new OrderLineItemEntity();
+        $lineItem->setId('li-1');
+        $lineItem->setPayload([
+            'rcColorPickerActive' => '1',
+            'rcColorPickerRal' => 'RAL 7016',
+            'rcColorPickerName' => 'Anthrazit',
+            'rcColorPickerHex' => '#293133',
+        ]);
+        $lineItem->setCustomFields([
+            'ruhrcoder_color_picker_ral' => 'RAL 7016',
+            'ruhrcoder_color_picker_name' => 'Anthrazit',
+            'ruhrcoder_color_picker_hex' => '#293133',
+        ]);
+
+        $order = new OrderEntity();
+        $order->setId('order-1');
+        $order->setLineItems(new OrderLineItemCollection([$lineItem]));
+
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->expects(self::never())->method('update');
+
+        $subscriber = new OrderColorSubscriber($repository, new NullLogger());
+        $subscriber->onOrderPlaced($this->createPlacedEvent($order));
     }
 }
