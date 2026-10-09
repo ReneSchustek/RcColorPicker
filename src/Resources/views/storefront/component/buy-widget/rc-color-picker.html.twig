@@ -65,7 +65,8 @@
                        data-ral="{{ color.ral|e('html_attr') }}"
                        data-name="{{ color.name|e('html_attr') }}"
                        data-hex="{{ color.hex|e('html_attr') }}">
-                <label class="rc-color-picker__swatch" for="{{ swatchId }}">
+                <label class="rc-color-picker__swatch" for="{{ swatchId }}"
+                       title="{{ 'rcColorPicker.swatchTitle'|trans({ '%ral%': color.ral, '%name%': color.name })|e('html_attr') }}">
                     <span class="rc-color-picker__swatch-color"
                           style="background-color: {{ color.hex|e('html_attr') }};"
                           aria-hidden="true"></span>

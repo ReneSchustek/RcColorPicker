@@ -9,6 +9,7 @@
         "required": "Bitte eine Farbe auswählen.",
         "requiredHint": "Pflichtfeld",
         "chooseColor": "Farbe %ral% %name% auswählen",
+        "swatchTitle": "%ral% – %name%",
         "swatchGroupLabel": "Verfügbare Standard-Farben",
         "cartLabel": "Farbe",
         "invalidRal": "Unbekannter RAL-Code. Bitte einen gültigen Code eingeben, zum Beispiel RAL 7016."

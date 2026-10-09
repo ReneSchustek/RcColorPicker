@@ -35,8 +35,8 @@ final class CustomFieldInstaller
             'name' => self::CUSTOM_FIELD_SET_NAME,
             'config' => [
                 'label' => [
-                    'de-DE' => 'RC Farbauswahl',
-                    'en-GB' => 'RC Color Picker',
+                    'de-DE' => 'Farbauswahl (RAL & Standard-Farben)',
+                    'en-GB' => 'Color Picker (RAL & Standard Colors)',
                 ],
             ],
             'customFields' => [
@@ -101,7 +101,7 @@ final class CustomFieldInstaller
         $criteria->addAssociation('customFields');
         $criteria->setLimit(1);
 
-        $set = $this->customFieldSetRepository->search($criteria, $context)->first();
+        $set = $this->customFieldSetRepository->search($criteria, $context)->getEntities()->first();
 
         if ($set === null) {
             return null;
