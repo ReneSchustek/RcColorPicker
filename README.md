@@ -19,11 +19,11 @@ Ermöglicht Kunden die Auswahl von Standard-Farben oder die Eingabe eigener RAL-
 
 ## Installation
 
-Das Plugin gehört als Ordner `custom/plugins/RcColorPicker` in die Shopware-Installation. Übertragen wird er von Hand — per FTP in dieses Verzeichnis kopieren; ein Composer-Paket gibt es nicht. Danach registriert Shopware ihn über die folgenden Befehle:
+Das Plugin gehört als Ordner `custom/plugins/RcColorPicker` in die Shopware-Installation. Übertragen wird er von Hand per FTP in dieses Verzeichnis, ein Composer-Paket gibt es nicht. Danach registriert Shopware ihn über die folgenden Befehle:
 
-Als Archiv geht es auch ohne FTP: In der Administration unter **Erweiterungen → Meine Erweiterungen → Erweiterung hochladen** nimmt Shopware eine ZIP-Datei entgegen und legt sie selbst an die richtige Stelle; auf der Konsole tut `plugin:zip-import` dasselbe. Danach folgen dieselben Schritte wie unten. Wer das Archiv unter macOS packt, entfernt vorher den Ordner `__MACOSX` — sonst weist Shopware die Datei ab.
+Als Archiv geht es auch ohne FTP: In der Administration unter **Erweiterungen → Meine Erweiterungen → Erweiterung hochladen** nimmt Shopware eine ZIP-Datei entgegen und legt sie selbst an die richtige Stelle; auf der Konsole tut `plugin:zip-import` dasselbe. Danach folgen dieselben Schritte wie unten. Wer das Archiv unter macOS packt, entfernt vorher den Ordner `__MACOSX`, sonst weist Shopware die Datei ab.
 
-Das vorkompilierte Storefront-JS liegt dem Plugin bei (`Resources/app/storefront/dist`) — auf dem Server ist **kein Node-Build** nötig.
+Das vorkompilierte Storefront-JS liegt dem Plugin bei (`Resources/app/storefront/dist`). Auf dem Server ist deshalb **kein Node-Build** nötig.
 
 ```bash
 php bin/console plugin:refresh
@@ -32,7 +32,7 @@ php bin/console theme:compile
 php bin/console cache:clear
 ```
 
-**Aktualisierungen laufen denselben Weg.** Den neuen Ordner per FTP über den alten legen, danach `plugin:refresh` und `plugin:update RcColorPicker`. Eine Aktualisierung von selbst gibt es nicht — ohne Composer-Paket und ohne Shopware-Store bleibt sie Sache des Betreibers. Vor einem Sprung über eine Hauptversion gehört ein Datenbank-Abzug dazu.
+**Aktualisierungen laufen denselben Weg.** Den neuen Ordner per FTP über den alten legen, danach `plugin:refresh` und `plugin:update RcColorPicker`. Eine Aktualisierung von selbst gibt es nicht: Ohne Composer-Paket und ohne Shopware-Store bleibt sie Sache des Betreibers. Vor einem Sprung über eine Hauptversion gehört ein Datenbank-Abzug dazu.
 
 ## Update
 
@@ -53,7 +53,7 @@ php bin/console cache:clear
 |-------------|-------------|----------|
 | Standard-Farben | Eine Farbe pro Zeile: `RAL-Code;Name;Hex` | 8 Farben |
 | Eigene RAL-Eingabe | Erlaubt Freitext-Eingabe neben Standard-Farben | Aktiv |
-| Farbauswahl Pflicht | Artikel ohne Farbe blockieren den Bestellabschluss — im Browser mit einer Meldung am Formular, serverseitig über einen Warenkorb-Prüfer | Aktiv |
+| Farbauswahl Pflicht | Artikel ohne Farbe blockieren den Bestellabschluss, im Browser mit einer Meldung am Formular, serverseitig über einen Warenkorb-Prüfer | Aktiv |
 
 ### Produkt (Custom Fields)
 
@@ -116,14 +116,14 @@ Zwei Suites, getrennt ausführbar:
 
 | Suite | Befehl | Voraussetzung |
 |-------|--------|---------------|
-| Unit | `composer test:unit` | keine — läuft ohne Datenbank |
+| Unit | `composer test:unit` | keine, läuft ohne Datenbank |
 | Integration | `composer test:integration` | MySQL/MariaDB + `DATABASE_URL`-Env |
 
 Die Integration-Suite nutzt Shopwares `IntegrationTestBehaviour` mit Test-Kernel und DB-Rollback je Test. Der TestBootstrapper benötigt eine komplette Shopware-Installation (`addCallingPlugin()` löst nur dort auf) — Integration-Tests laufen daher auf einer Shopware-Test-Instanz, nicht im Plugin-Solo-Repo. In GitHub Actions läuft nur der `quality`-Job (Audit, CS-Fixer, PHPStan, Unit-Tests).
 
 ## Entwickler-Hinweise
 
-- **CS-Fixer lokal:** PHP CS Fixer benötigt `ext-intl`. Auf Windows-PHP-Builds ohne intl-Extension lokal nicht ausführbar — stattdessen auf einem Linux-Host mit intl oder im CI laufen lassen.
+- **CS-Fixer lokal:** PHP CS Fixer benötigt `ext-intl`. Auf Windows-PHP-Builds ohne intl-Extension lokal nicht ausführbar. Dann auf einem Linux-Host mit intl oder im CI laufen lassen.
 - **PHP-Versions-Range:** Plugin testet gegen 8.2 / 8.3 / 8.4 (Shopware-6.7-/-6.8-Matrix). PHP 8.5 funktioniert für Runtime, CS-Fixer ist dort noch nicht offiziell freigegeben.
 
 ## Deployment
