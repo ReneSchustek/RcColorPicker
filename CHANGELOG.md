@@ -1,5 +1,17 @@
 # Changelog (DE)
 
+## [2.6.4] - 2026-10-13 — Farbfeld im Eingabefeld, Ecken wie das Theme
+
+### Geändert
+
+- **Die RAL-Vorschau steht im Eingabefeld**, rechts innen. Bisher hing sie als eigener Kasten daneben; mit dem
+  Fokusrahmen sah das aus wie zwei getrennte Bedienelemente.
+- Farbfelder, RAL-Vorschau und das Farbquadrat im Warenkorb nehmen den Radius des Themes statt fester 2 bis
+  4 Pixel: 2 in Design 2027, 8 im bisherigen Theme. Die innere Farbfläche bleibt um den Rahmen kleiner, die
+  Ecken laufen parallel.
+
+> **Deployment:** `plugin:update RcColorPicker`, `theme:compile`, `cache:clear`.
+
 ## [2.6.3] - 2026-10-09 — Die Zusatzfelder heißen wie die Erweiterung
 
 ### Geändert

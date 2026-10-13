@@ -90,7 +90,10 @@
                    class="{{ customRalLabelVisible ? 'form-label fw-semibold' : 'visually-hidden' }}">
                 {{ 'rcColorPicker.customRalLabel'|trans }}
             </label>
-            <div class="input-group">
+            {# Das Farbfeld sitzt im Eingabefeld (rechts innen), nicht als Anhang daneben. Als Anhang
+               stand es beim Fokus abgesetzt neben dem hervorgehobenen Feld und wirkte wie ein eigenes
+               Bedienelement. #}
+            <div class="rc-color-picker__ral-field">
                 <input type="text"
                        id="rcCpRalInput_{{ product.id }}"
                        class="form-control rc-color-picker__ral-input"
@@ -98,7 +101,7 @@
                        maxlength="20"
                        autocomplete="off"
                        aria-describedby="rcCpRalHint_{{ product.id }}">
-                <span class="input-group-text rc-color-picker__ral-preview-wrapper p-1" hidden>
+                <span class="rc-color-picker__ral-preview-wrapper" hidden>
                     <span class="rc-color-picker__ral-preview" aria-hidden="true"></span>
                 </span>
             </div>
