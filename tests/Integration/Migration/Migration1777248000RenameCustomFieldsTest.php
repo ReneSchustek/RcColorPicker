@@ -135,9 +135,9 @@ final class Migration1777248000RenameCustomFieldsTest extends IntegrationTestBas
     /**
      * Der Kollisionsfall: v1-Reste und v2-Felder liegen gleichzeitig in der Datenbank.
      *
-     * Früher brach die Migration hier mit einer Constraint-Verletzung ab und riss das
-     * gesamte `plugin:update` mit — bei `custom_field_set` wären mangels Unique-Index sogar
-     * stillschweigend zwei gleichnamige Sets entstanden. Erwartet wird jetzt: kein Abbruch,
+     * Benennt die Migration hier blind um, bricht sie mit einer Constraint-Verletzung ab und
+     * reißt das gesamte `plugin:update` mit; bei `custom_field_set` entstünden mangels
+     * Unique-Index sogar stillschweigend zwei gleichnamige Sets. Erwartet wird: kein Abbruch,
      * und keine der beiden Seiten wird angefasst.
      */
     public function testSkipsRenameWhenTargetNameIsTaken(): void

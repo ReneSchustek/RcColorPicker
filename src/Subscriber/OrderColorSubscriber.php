@@ -152,10 +152,10 @@ final class OrderColorSubscriber implements EventSubscriberInterface
     /**
      * Trägt die geprüften Werte auch in die **Nutzlast** ein.
      *
-     * Bis zum 2026-08-03 fasste dieser Abonnent nur die CustomFields an — und das war wirkungslos
-     * für alles Sichtbare: Warenkorb-Template und Bestellbestätigung lesen die Nutzlast, der
-     * Rückfall auf die CustomFields greift bei aktiver Farbauswahl nie. Die „Validierung an der
-     * Persistenz-Kante“ prüfte damit genau die Kopie, die niemand anzeigt.
+     * Nur die CustomFields zu bereinigen bliebe für alles Sichtbare wirkungslos:
+     * Warenkorb-Template und Bestellbestätigung lesen die Nutzlast, der Rückfall auf die
+     * CustomFields greift bei aktiver Farbauswahl nie. Die „Validierung an der Persistenz-Kante“
+     * prüfte sonst genau die Kopie, die niemand anzeigt.
      *
      * @return array<string, mixed>|null null, wenn nichts zu ändern war
      */

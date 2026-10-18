@@ -19,10 +19,9 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 /**
  * Die Farbpflicht auf dem Server.
  *
- * Bis zum 2026-08-03 lag sie allein im JavaScript — und griff selbst dort nicht: Shopwares
- * `AddToCart` hängt am selben Formular und wird zuerst angemeldet, hatte den Artikel also bereits
- * per Hintergrundanfrage im Warenkorb, bevor die Prüfung überhaupt lief. Ein Headless-Client
- * umging sie ohnehin.
+ * Allein im JavaScript griffe sie selbst im Browser nicht: Shopwares `AddToCart` hängt am selben
+ * Formular und wird zuerst angemeldet, hat den Artikel also schon per Hintergrundanfrage im
+ * Warenkorb, bevor die Prüfung überhaupt läuft. Ein Headless-Client umgeht sie ohnehin.
  *
  * Diese Tests prüfen die einzige Stelle, an der sich die Zusage einlösen lässt.
  */

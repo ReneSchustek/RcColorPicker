@@ -78,7 +78,7 @@ final class Migration1785715200RepatchOrderConfirmationMailColorBlockTest extend
         );
         self::assertStringNotContainsString('mail-color-block-v1', $patched);
 
-        // Eine Farbe ohne RAL-Code fiel vorher heraus, weil der Block auf `cpRal` prüfte.
+        // Der v1-Block im Bestand prüft nur auf `cpRal` und lässt eine Farbe ohne RAL-Code weg.
         self::assertStringContainsString('{% if cpRal or cpName %}', $patched);
     }
 

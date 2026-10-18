@@ -17,11 +17,11 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
  *
  * Warum das nicht im Browser reicht
  * ---------------------------------
- * Die Prüfung lag bis zum 2026-08-03 allein im JavaScript — und griff selbst dort nicht:
- * Shopwares `AddToCart` hängt am selben Formular und wird zuerst angemeldet, hatte den Artikel
- * also bereits per Hintergrundanfrage im Warenkorb, bevor die Prüfung überhaupt lief. Ein
- * Headless-Client umgeht sie ohnehin, und ein Warenkorb kann aus einer Sitzung stammen, in der
- * die Farbe noch nicht Pflicht war.
+ * Eine Prüfung allein im JavaScript greift selbst im Browser nicht: Shopwares `AddToCart` hängt
+ * am selben Formular und wird zuerst angemeldet, hat den Artikel also schon per
+ * Hintergrundanfrage im Warenkorb, bevor die Prüfung überhaupt läuft. Ein Headless-Client umgeht
+ * sie ohnehin, und ein Warenkorb kann aus einer Sitzung stammen, in der die Farbe noch nicht
+ * Pflicht war.
  *
  * Der Warenkorb-Prüfer läuft bei **jeder** Neuberechnung, unabhängig davon, wie die Position
  * hineingekommen ist. Das ist die einzige Stelle, an der sich die Zusage einlösen lässt.

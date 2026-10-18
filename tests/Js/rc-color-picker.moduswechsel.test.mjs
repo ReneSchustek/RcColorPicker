@@ -1,9 +1,8 @@
-// Der Moduswechsel — die Stelle, an der die angezeigte und die bestellte Farbe auseinanderliefen.
+// Der Moduswechsel ist die Stelle, an der angezeigte und bestellte Farbe auseinanderlaufen können.
 //
-// Bis zum 2026-08-03 räumte `_onModeChange` unsymmetrisch auf: Beim Wechsel nach „Standard" wurde
-// die Nutzlast nur geleert, wenn *keine* gültige Farbe gesetzt war. Ein zuvor eingegebener
-// gültiger RAL-Code hat aber genau das — er blieb also stehen, während das Formular den
-// Standard-Modus ohne ausgewählte Kachel zeigte. Bestellt wurde der alte Code.
+// Leert `_onModeChange` beim Wechsel nach „Standard" die Nutzlast nur, wenn *keine* gültige Farbe
+// gesetzt ist, bleibt ein zuvor eingegebener gültiger RAL-Code stehen, während das Formular den
+// Standard-Modus ohne ausgewählte Kachel zeigt. Bestellt würde dann der alte Code.
 //
 // Zero-Dependency: Node-Standardbibliothek (node:test).
 
@@ -65,9 +64,9 @@ function makeElement() {
 }
 
 /**
- * Anders als im Auswahl-Test wird hier der **echte** Payload-Weg mitgeführt: Der ganze Befund
- * bestand darin, dass Anzeige und Nutzlast auseinanderliefen. Ein Doppelgänger für die Nutzlast
- * hätte genau das verdeckt.
+ * Anders als im Auswahl-Test wird hier der **echte** Payload-Weg mitgeführt: Die Falle besteht
+ * gerade darin, dass Anzeige und Nutzlast auseinanderlaufen. Ein Doppelgänger für die Nutzlast
+ * verdeckte genau das.
  */
 function makeInstance() {
     const instance = Object.create(RcColorPickerPlugin.prototype);

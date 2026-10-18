@@ -19,9 +19,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * Zwei Parameternamen, nicht einer
  * --------------------------------
  * Die Storefront schickt `lineItems`, die Store-API **`items`** (`CartItemAddRoute.php:57`,
- * `CartItemUpdateRoute.php:46`). Bis zum 2026-08-03 las dieser Abonnent nur `lineItems` — und der
- * Klassenkommentar behauptete trotzdem, Headless- und PWA-Clients seien abgedeckt. Waren sie
- * nicht: Ein `POST /store-api/checkout/cart/line-item` mit
+ * `CartItemUpdateRoute.php:46`). Wer nur `lineItems` liest, lässt Headless- und PWA-Clients
+ * durch: Ein `POST /store-api/checkout/cart/line-item` mit
  * `items[0][payload][rcColorPickerHex] = "red;background-image:url(…)"` legte den Wert ungeprüft
  * in `order_line_item.payload`. Im Warenkorb-Template steht er in einem `style`-Attribut;
  * `e('html_attr')` verhindert dort den Ausbruch aus dem Attribut, aber kein Semikolon im

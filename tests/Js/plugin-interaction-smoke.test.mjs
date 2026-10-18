@@ -5,9 +5,8 @@
 // Kombination die Finger von der ID lassen und trotzdem seinen Suffix beitragen.
 //
 // Die Kennzeichnung des ID-Hoheitsträgers kommt in zwei erlaubten Varianten: als Attribut an
-// einem Nachkommen (Twig) oder als dataset am Form selbst (JS). Beide Wege müssen greifen —
-// genau diese Lücke hat 2026-07-17 in der Storefront eine Aufteilung angezeigt, die der Server
-// nicht kannte.
+// einem Nachkommen (Twig) oder als dataset am Form selbst (JS). Beide Wege müssen greifen, sonst
+// zeigt die Storefront eine Aufteilung an, die der Server nicht kennt.
 //
 // Zero-Dependency: Node-Standardbibliothek (node:test).
 

@@ -423,11 +423,10 @@ final class OrderColorSubscriberTest extends TestCase
 
     /**
      * Was: Ein unsauberer Hex-Wert in der Nutzlast der Bestellung.
-     * Warum: **Die Bereinigung fasste bis zum 2026-08-03 nur die CustomFields an — und das war
-     *        wirkungslos für alles Sichtbare.** Warenkorb-Template und Bestellbestätigung lesen
-     *        die Nutzlast; der Rückfall auf die CustomFields greift bei aktiver Farbauswahl nie.
-     *        Die „Validierung an der Persistenz-Kante" prüfte genau die Kopie, die niemand
-     *        anzeigt.
+     * Warum: Bereinigte sie nur die CustomFields, bliebe sie für alles Sichtbare wirkungslos.
+     *        Warenkorb-Template und Bestellbestätigung lesen die Nutzlast; der Rückfall auf die
+     *        CustomFields greift bei aktiver Farbauswahl nie. Die „Validierung an der
+     *        Persistenz-Kante" prüfte sonst genau die Kopie, die niemand anzeigt.
      * Erwartet: Der Wert ist auch in der Nutzlast verworfen.
      */
     public function testThePayloadIsSanitizedNotOnlyTheCustomFields(): void

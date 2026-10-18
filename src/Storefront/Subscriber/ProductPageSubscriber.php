@@ -22,13 +22,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Naheliegend wäre, die Konfiguration an die Seite oder an `page.product` zu hängen. Beides trägt
  * nicht: Der Kaufbereich ist seit Shopware 6.4 ein CMS-Element, und
  * `cms-element-buy-box.html.twig` übergibt `element.data.product` — eine **eigene Instanz**, die
- * der BuyBox-Resolver lädt. Am 2026-08-03 auf dev-67121 gemessen: gleiche Produkt-ID, andere
- * Erweiterungen. `page.product` trug `rcColorPickerConfig`, die Instanz in der Vorlage nicht.
+ * der BuyBox-Resolver lädt. Beide tragen dieselbe Produkt-ID, aber nicht dieselben
+ * Erweiterungen: `rcColorPickerConfig` an `page.product` kommt in der Vorlage nicht an.
  *
- * An der Seite zu hängen ging dagegen am CMS-Kaufbereich vorbei:
+ * An der Seite zu hängen geht dagegen am CMS-Kaufbereich vorbei:
  * `CmsController::switchBuyBoxVariant()` rendert ihn beim Variantenwechsel mit `product`, aber
  * **ohne `page`** (Kern 6.7.12.1, Zeile 223-228) und ohne ein `ProductPageLoadedEvent` zu feuern.
- * Im ausgetauschten Markup fehlte danach das gesamte Feld samt der verborgenen Nutzlast-Felder:
+ * Im ausgetauschten Markup fehlte dann das gesamte Feld samt der verborgenen Nutzlast-Felder:
  * keine Farbauswahl, keine Pflichtprüfung, keine Meldung.
  *
  * Deshalb hier beide Wege, und beide am Produkt: der Aufbau der Seite und der Variantenwechsel.

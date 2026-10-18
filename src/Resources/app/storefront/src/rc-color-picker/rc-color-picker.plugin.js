@@ -59,9 +59,9 @@ export default class RcColorPickerPlugin extends Plugin {
     /**
      * Kein `super.destroy()`: Die Basisklasse des Kerns hat keine solche Methode.
      *
-     * Der Aufruf war ein sicherer Fehlschlag — er hätte mit `super.destroy is not a function`
-     * abgebrochen, und zwar **nach** dem Abbruch der Zuhörer, aber **vor** dem Räumen des
-     * Zeitgebers. Wer die Methode also je aufrief, bekam genau das Leck, das sie verhindern soll.
+     * Ein solcher Aufruf bräche mit `super.destroy is not a function` ab, und zwar **nach** dem
+     * Abbruch der Zuhörer, aber **vor** dem Räumen des Zeitgebers. Wer die Methode aufriefe,
+     * bekäme genau das Leck, das sie verhindern soll.
      */
     destroy() {
         // init() kann früh zurückkehren (kein Form, kein Produkt-ID) bevor _abortController gesetzt ist.
@@ -156,8 +156,8 @@ export default class RcColorPickerPlugin extends Plugin {
             return;
         }
 
-        // Unbekannter Code ist keine Farbe. Früher wanderte er als Payload in die Bestellung,
-        // und die einzige Rückmeldung war die ausbleibende Vorschau — rein visuell.
+        // Unbekannter Code ist keine Farbe. Bliebe er stehen, wanderte er als Payload in die
+        // Bestellung, und die einzige Rückmeldung wäre die ausbleibende Vorschau.
         this._selectedColor = null;
         this._clearPayload();
         this._hideRalPreview();
@@ -167,11 +167,10 @@ export default class RcColorPickerPlugin extends Plugin {
     /**
      * Der Moduswechsel räumt in **beide** Richtungen gleich auf.
      *
-     * Vorher war er unsymmetrisch: Beim Wechsel nach „Standard" wurde die Nutzlast nur geleert,
-     * wenn keine gültige Farbe gesetzt war. Ein zuvor eingegebener gültiger RAL-Code hat aber
-     * genau das — er blieb also stehen. Sichtbar war danach der Standard-Modus ohne ausgewählte
-     * Kachel, bestellt wurde der alte RAL-Code. Der Kunde bekam eine Farbe, die im Formular
-     * nirgends mehr stand.
+     * Leerte der Wechsel nach „Standard" die Nutzlast nur, wenn keine gültige Farbe gesetzt ist,
+     * bliebe ein zuvor eingegebener gültiger RAL-Code stehen. Sichtbar wäre dann der
+     * Standard-Modus ohne ausgewählte Kachel, bestellt der alte RAL-Code, und der Kunde bekäme
+     * eine Farbe, die im Formular nirgends mehr steht.
      *
      * Deshalb hier: erst alles zurücknehmen, dann neu bewerten, was im Zielmodus **tatsächlich**
      * ausgewählt ist. Was nicht sichtbar ist, wird auch nicht bestellt.
