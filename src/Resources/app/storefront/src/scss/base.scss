@@ -57,7 +57,7 @@
         }
     }
 
-    // Auswahl-Rahmen hängt am :checked des Radios, nicht mehr an einer per JS
+    // Auswahl-Rahmen hängt am :checked des Radios, nicht an einer per JS
     // gesetzten Klasse — Zustand und Optik können so nicht auseinanderlaufen.
     &__swatch-input:checked + &__swatch {
         border-color: var(--bs-primary, #0d6efd);
@@ -85,9 +85,9 @@
         // Innen um Rahmen und Abstand (4 Pixel) kleiner, damit die Ecken parallel zum Rahmen laufen.
         border-radius: max(0px, calc(var(--bs-border-radius, 4px) - 4px));
         // Diese Linie ist die einzige Begrenzung einer nicht gewählten Farbfläche. Bei hellen
-        // Farben (RAL 9010 Reinweiss) auf hellem Grund trägt sie allein die Erkennbarkeit des
-        // Bedienelements. Mit den früheren 15 % Deckkraft lag sie bei 1,41:1 und damit unter der
-        // Anforderung von 3:1 (WCAG 1.4.11); 45 % ergeben gemessene 3,41:1 auf weissem Grund.
+        // Farben (RAL 9010 Reinweiß) auf hellem Grund trägt sie allein die Erkennbarkeit des
+        // Bedienelements. 15 % Deckkraft ergäben 1,41:1 und damit weniger als die geforderten
+        // 3:1 (WCAG 1.4.11); 45 % ergeben gemessene 3,41:1 auf weißem Grund.
         border: 1px solid rgba(0, 0, 0, 0.45);
     }
 

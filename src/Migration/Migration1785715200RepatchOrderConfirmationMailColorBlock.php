@@ -145,7 +145,7 @@ TWIG;
     }
 
     /**
-     * Neu: Es genügt, wenn **eine** der beiden Angaben da ist.
+     * Der v2-Block erscheint, sobald **eine** der beiden Angaben da ist.
      *
      * Der Trenner steht nur zwischen zwei vorhandenen Werten — sonst begänne die Zeile bei einer
      * Farbe ohne RAL-Code mit einem Gedankenstrich.

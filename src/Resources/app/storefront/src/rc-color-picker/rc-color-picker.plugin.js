@@ -100,9 +100,9 @@ export default class RcColorPickerPlugin extends Plugin {
             // Shopwares `AddToCart` hängt auf demselben `<form>` und wird vom PluginManager
             // zuerst angemeldet — der Kern registriert sein Plugin, bevor unser Bündel überhaupt
             // geladen ist. Bei Zuhörern am selben Element entscheidet allein die
-            // Anmeldereihenfolge, nicht die Phase; `stopImmediatePropagation()` kam deshalb zu
-            // spät: `add-to-cart.plugin.js` hatte den Artikel schon per Hintergrundanfrage im
-            // Warenkorb, während die Fehlermeldung hinter dem Warenkorb-Auszug erschien.
+            // Anmeldereihenfolge, nicht die Phase; `stopImmediatePropagation()` käme deshalb zu
+            // spät: `add-to-cart.plugin.js` hätte den Artikel schon per Hintergrundanfrage im
+            // Warenkorb, während die Fehlermeldung hinter dem Warenkorb-Auszug erschiene.
             //
             // Ein Zuhörer in der Einfangphase eines Vorfahren läuft dagegen **vor** allen
             // Zuhörern am Ziel. `stopPropagation()` dort verhindert, dass das Ereignis das
@@ -430,8 +430,8 @@ export default class RcColorPickerPlugin extends Plugin {
     /**
      * Blendet den Namen aus **und leert ihn**.
      *
-     * Nur zu verstecken reichte nicht: Der alte Text stand beim nächsten Einblenden wieder da,
-     * auch wenn die Auswahl längst eine andere war.
+     * Nur zu verstecken reicht nicht: Der alte Text stünde beim nächsten Einblenden wieder da,
+     * auch wenn die Auswahl längst eine andere ist.
      */
     _hideSelectedName() {
         this._selectedNameEl.hidden = true;

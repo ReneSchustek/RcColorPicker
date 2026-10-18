@@ -210,11 +210,11 @@ final class PayloadSanitizerSubscriberTest extends TestCase
 
     /**
      * Was: Ein Store-API-Aufruf mit dem Parameter `items`.
-     * Warum: **Das war die Lücke.** Die Storefront schickt `lineItems`, die Store-API `items`
-     *        (`CartItemAddRoute.php:57`). Der Abonnent las nur `lineItems` — und der
-     *        Klassenkommentar behauptete trotzdem, Headless- und PWA-Clients seien abgedeckt.
-     *        Ein Hex-Wert wie `red;background-image:url(…)` landete damit ungeprüft in
-     *        `order_line_item.payload` und von dort in ein `style`-Attribut.
+     * Warum: **Hier liegt die Lücke, die der Test schließt.** Die Storefront schickt `lineItems`,
+     *        die Store-API `items` (`CartItemAddRoute.php:57`). Läse der Abonnent nur
+     *        `lineItems`, wären Headless- und PWA-Clients ungeschützt: Ein Hex-Wert wie
+     *        `red;background-image:url(…)` landete ungeprüft in `order_line_item.payload` und
+     *        von dort in ein `style`-Attribut.
      * Erwartet: Der Wert ist verworfen.
      */
     public function testStoreApiItemsAreSanitizedAsWell(): void
@@ -260,8 +260,8 @@ final class PayloadSanitizerSubscriberTest extends TestCase
 
     /**
      * Was: Beide Parameter in einem Aufruf.
-     * Warum: Die Umstellung darf den bisherigen Weg nicht verlieren. Ein Test nur auf `items`
-     *        hätte einen Fehler in `lineItems` nicht bemerkt.
+     * Warum: Beide Wege müssen greifen. Ein Test nur auf `items` bemerkte einen Fehler in
+     *        `lineItems` nicht.
      * Erwartet: beide bereinigt.
      */
     public function testBothParameterNamesAreHandled(): void

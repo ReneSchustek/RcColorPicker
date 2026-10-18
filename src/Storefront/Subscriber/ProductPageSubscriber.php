@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Warum das nicht `page.product` ist
  * ----------------------------------
  * Naheliegend wäre, die Konfiguration an die Seite oder an `page.product` zu hängen. Beides trägt
- * nicht: Der Kaufbereich ist seit Shopware 6.4 ein CMS-Element, und
+ * nicht: Der Kaufbereich ist in Shopware ein CMS-Element, und
  * `cms-element-buy-box.html.twig` übergibt `element.data.product` — eine **eigene Instanz**, die
  * der BuyBox-Resolver lädt. Beide tragen dieselbe Produkt-ID, aber nicht dieselben
  * Erweiterungen: `rcColorPickerConfig` an `page.product` kommt in der Vorlage nicht an.
