@@ -3,7 +3,7 @@
     "description": "RAL-Farbauswahl und Standard-Farben für Shopware 6 Produkte / RAL color picker and standard colors for Shopware 6 products",
     "type": "shopware-platform-plugin",
     "version": "2.6.4",
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Ruhrcoder"

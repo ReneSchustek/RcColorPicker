@@ -154,4 +154,4 @@ bin/console cache:clear
 
 ## Lizenz
 
-MIT
+Proprietär – siehe [composer.json](composer.json).
